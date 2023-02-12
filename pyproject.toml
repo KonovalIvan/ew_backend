@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "ew-backend"
+version = "0.1.0"
+description = ""
+authors = ["Ivan Konoval <keks.ivan.k@gmail.com>"]
+readme = "README.md"
+packages = [{include = "ew_backend"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^4.1.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
