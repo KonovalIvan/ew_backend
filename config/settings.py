@@ -14,12 +14,12 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-# load the environment variables from the .env file
-load_dotenv()
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+SECRETS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'secrets')
 
+# load the environment variables from the .env file
+load_dotenv(os.path.join(SECRETS_DIR, '.env.dev'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -80,7 +80,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'config.base.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
