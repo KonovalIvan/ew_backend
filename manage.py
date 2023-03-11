@@ -8,6 +8,16 @@ def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
     try:
+        from mypy import api
+        os.chdir(os.path.dirname(os.path.abspath(__file__)))
+        results = api.run(["myapp"])
+        if results[2]:
+            print(results[2])
+            sys.exit(1)
+    except ImportError:
+        pass
+
+    try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
         raise ImportError(
