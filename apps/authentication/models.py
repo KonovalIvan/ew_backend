@@ -3,7 +3,7 @@ from typing import Any
 from django.contrib.auth.models import AbstractUser
 from django.contrib.gis.db import models
 
-from apps.auth.consts import UserType
+from apps.authentication.consts import UserType
 from apps.base_models import BaseModel, TimestampMixin
 
 
