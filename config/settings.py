@@ -41,8 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.authentication',
 ]
+
+for app_name in os.listdir('./apps'):
+    if os.path.isdir(os.path.join('./apps', app_name)):
+        app_module = f"apps.{app_name}"
+        INSTALLED_APPS.append(app_module)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -82,10 +86,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 # Database
 DATABASES = {
