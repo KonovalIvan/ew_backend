@@ -18,5 +18,7 @@ build/
 
 # Secrets
 secrets/
-loggers/
 env/
+
+# Logging
+loggers/
