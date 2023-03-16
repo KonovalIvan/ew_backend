@@ -5,6 +5,9 @@ from apps.particular_task.models import ParticularTask
 
 
 class Commentary(BaseModel, TimestampMixin):
+    """
+    Model for comments from people who will check how the tasks are going
+    """
     description = models.TextField()
     task = models.ForeignKey(ParticularTask, related_name='commentary', on_delete=models.CASCADE)
     commentary = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)

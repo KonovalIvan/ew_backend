@@ -7,6 +7,9 @@ from apps.particular_task.consts import image_directory_path
 
 
 class ParticularTask(BaseModel, TimestampMixin):
+    """
+    Model created as card for dashboard
+    """
     name = models.CharField(max_length=32, null=False, blank=False)
     description = models.TextField()
     dashboard = models.ForeignKey(ProjectDashboard,

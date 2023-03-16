@@ -1,3 +1,10 @@
 from django.contrib import admin
 
-# Register your models here.
+from apps.dashboard.models import ProjectDashboard
+
+
+class ProjectDashboardAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(ProjectDashboard, ProjectDashboardAdmin)

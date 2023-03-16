@@ -1,3 +1,10 @@
 from django.contrib import admin
 
-# Register your models here.
+from apps.particular_task.models import ParticularTask
+
+
+class ParticularTaskAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(ParticularTask, ParticularTaskAdmin)
