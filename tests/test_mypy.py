@@ -5,7 +5,7 @@ class MypyError(Exception):
     pass
 
 
-def test_mypy():
+def test_mypy() -> None:
     result = subprocess.run(
         ["mypy", "--config-file", "mypy.ini", "."],
         stdout=subprocess.PIPE,
@@ -17,5 +17,6 @@ def test_mypy():
         errors = result.stderr.decode("utf-8").replace("\r\n", "\n\t")
         error_messages = f"stdout:\n\t{output}\nstderr:\n\t{errors}"
         raise MypyError(
-            f"mypy failed with return code {result.returncode}\n{error_messages}"
+            f"mypy failed with return code {result.returncode}"
+            f"\n{error_messages}"
         )

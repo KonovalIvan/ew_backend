@@ -22,11 +22,17 @@ class ParticularTask(BaseModel, TimestampMixin):
     )
     status = models.BooleanField(default=False)
     client_accepting = models.BooleanField(default=False)
-    photo = models.ImageField(upload_to=image_directory_path(dashboard=dashboard))
+    photo = models.ImageField(
+        upload_to=image_directory_path(dashboard=dashboard)
+    )  # type: ignore
 
     # TODO: create deleted_user logic and replace set_null to deleted user
     assign = models.ForeignKey(
-        User, on_delete=models.SET_NULL, related_name="task", null=True, blank=True
+        User,
+        on_delete=models.SET_NULL,
+        related_name="task",
+        null=True,
+        blank=True,
     )
 
     def __str__(self) -> str:
