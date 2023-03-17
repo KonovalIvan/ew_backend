@@ -44,4 +44,4 @@ class BuildingProject(BaseModel, TimestampMixin):
         return f"{self.name}"
 
     def short_description(self) -> str:
-        return self.description[:128]
+        return self.description[:128] if self.description else "No description"

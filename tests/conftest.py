@@ -1,7 +1,9 @@
+from typing import Generator
+
 from django.conf import settings
 
 
-def pytest_configure():
+def pytest_configure() -> None:
     settings.DEBUG = False
     settings.DATABASES["default"] = {
         "ENGINE": "django.db.backends.postgresql",
@@ -22,7 +24,7 @@ def pytest_configure():
     ]
 
 
-def django_db_setup():
+def django_db_setup() -> Generator:
     from django.conf import settings
     from django.core.management import call_command
     from django.db import connections
