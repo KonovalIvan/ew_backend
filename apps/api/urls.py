@@ -1,7 +1,4 @@
-from django.urls import path, include
-from apps.api.authentication.views import (
-    UserApiView,
-)
+from django.urls import include, path
 
 urlpatterns = [
     path("authentication/", include("apps.api.authentication.urls")),
