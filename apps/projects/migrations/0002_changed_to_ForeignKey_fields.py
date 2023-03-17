@@ -9,39 +9,68 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('authentication', '0001_initial'),
-        ('projects', '0001_initial'),
+        ("authentication", "0001_initial"),
+        ("projects", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='buildingproject',
-            name='address',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='authentication.address'),
+            model_name="buildingproject",
+            name="address",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="authentication.address",
+            ),
         ),
         migrations.AlterField(
-            model_name='buildingproject',
-            name='building_master',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='master_project', to=settings.AUTH_USER_MODEL),
+            model_name="buildingproject",
+            name="building_master",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="master_project",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='buildingproject',
-            name='client',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='user_project', to=settings.AUTH_USER_MODEL),
+            model_name="buildingproject",
+            name="client",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="user_project",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='buildingproject',
-            name='description',
+            model_name="buildingproject",
+            name="description",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='buildingproject',
-            name='designer',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='designer_project', to=settings.AUTH_USER_MODEL),
+            model_name="buildingproject",
+            name="designer",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="designer_project",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='buildingproject',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='owner_project', to=settings.AUTH_USER_MODEL),
+            model_name="buildingproject",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="owner_project",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

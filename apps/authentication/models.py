@@ -9,6 +9,7 @@ class Address(BaseModel):
     """
     That model serve for addresses
     """
+
     address_line_1 = models.CharField(max_length=128, blank=True, null=True)
     address_line_2 = models.CharField(max_length=128, blank=True, null=True)
     post_code = models.CharField(max_length=32, blank=True, null=True)
@@ -19,7 +20,13 @@ class Address(BaseModel):
         verbose_name_plural = "addresses"
 
     def __str__(self) -> str:
-        parts_to_display = [self.address_line_1, self.address_line_2, self.post_code, self.city, self.country]
+        parts_to_display = [
+            self.address_line_1,
+            self.address_line_2,
+            self.post_code,
+            self.city,
+            self.country,
+        ]
         return ", ".join([str(parts) for parts in parts_to_display if str(parts) != ""])
 
 
@@ -27,9 +34,15 @@ class User(AbstractUser, BaseModel):
     """
     This model created for the user
     """
-    company_name = models.CharField(max_length=128)
-    user_type = models.CharField(max_length=128, default=UserType.CLIENT, choices=UserType.choice(), blank=False, null=False)
 
+    company_name = models.CharField(max_length=128)
+    user_type = models.CharField(
+        max_length=128,
+        default=UserType.CLIENT,
+        choices=UserType.choice(),
+        blank=False,
+        null=False,
+    )
 
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name} / {self.email}"

@@ -4,5 +4,5 @@ from apps.api.authentication.views import (
 )
 
 urlpatterns = [
-    path('authentication/', include("apps.api.authentication.urls")),
+    path("authentication/", include("apps.api.authentication.urls")),
 ]

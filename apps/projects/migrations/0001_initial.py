@@ -8,26 +8,33 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='BuildingProject',
+            name="BuildingProject",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('name', models.CharField(max_length=32)),
-                ('address', models.CharField(max_length=128)),
-                ('description', models.TextField()),
-                ('client', models.CharField(max_length=128)),
-                ('designer', models.CharField(max_length=128)),
-                ('building_master', models.CharField(max_length=128)),
-                ('owner', models.CharField(max_length=128)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("name", models.CharField(max_length=32)),
+                ("address", models.CharField(max_length=128)),
+                ("description", models.TextField()),
+                ("client", models.CharField(max_length=128)),
+                ("designer", models.CharField(max_length=128)),
+                ("building_master", models.CharField(max_length=128)),
+                ("owner", models.CharField(max_length=128)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

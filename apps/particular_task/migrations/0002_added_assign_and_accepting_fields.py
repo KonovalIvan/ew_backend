@@ -7,19 +7,25 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('authentication', '0001_initial'),
-        ('particular_task', '0001_initial'),
+        ("authentication", "0001_initial"),
+        ("particular_task", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='particulartask',
-            name='assign',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='task', to='authentication.user'),
+            model_name="particulartask",
+            name="assign",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="task",
+                to="authentication.user",
+            ),
         ),
         migrations.AddField(
-            model_name='particulartask',
-            name='client_accepting',
+            model_name="particulartask",
+            name="client_accepting",
             field=models.BooleanField(default=False),
         ),
     ]

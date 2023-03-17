@@ -4,5 +4,5 @@ from apps.api.authentication.views import (
 )
 
 urlpatterns = [
-    path('user/', UserApiView.as_view(), name='user'),
+    path("user/", UserApiView.as_view(), name="user"),
 ]

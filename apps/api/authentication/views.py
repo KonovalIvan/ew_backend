@@ -28,7 +28,7 @@ class UserApiView(APIView):
             "first_name": request.data.get("first_name"),
             "last_name": request.data.get("last_name"),
             "email": request.data.get("email"),
-            "user_type": request.data.get("user_type")
+            "user_type": request.data.get("user_type"),
         }
         serializer = self.serializer_class(data=data, many=False)
 

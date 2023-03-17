@@ -8,10 +8,14 @@ class Commentary(BaseModel, TimestampMixin):
     """
     Model for comments from people who will check how the tasks are going
     """
-    description = models.TextField()
-    task = models.ForeignKey(ParticularTask, related_name='commentary', on_delete=models.CASCADE)
-    commentary = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
 
+    description = models.TextField()
+    task = models.ForeignKey(
+        ParticularTask, related_name="commentary", on_delete=models.CASCADE
+    )
+    commentary = models.ForeignKey(
+        "self", null=True, blank=True, related_name="replies", on_delete=models.CASCADE
+    )
 
     def __str__(self) -> str:
         return f"{self.short_description}"
