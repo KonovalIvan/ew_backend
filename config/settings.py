@@ -33,7 +33,6 @@ DEBUG = os.getenv("DEBUG")
 ALLOWED_HOSTS = ['*']
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
+    'drf_yasg',
 ]
 
 for app_name in os.listdir('./apps'):
@@ -49,6 +48,7 @@ for app_name in os.listdir('./apps'):
         app_module = f"apps.{app_name}"
         INSTALLED_APPS.append(app_module)
 
+# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

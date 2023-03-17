@@ -19,6 +19,8 @@ pillow = "^9.4.0"
 djangorestframework = "^3.14.0"
 markdown = "^3.4.1"
 django-filter = "^22.1"
+django-rest-swagger = "^2.2.0"
+drf-yasg = "^1.21.5"
 
 
 [build-system]
