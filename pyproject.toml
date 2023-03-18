@@ -30,6 +30,10 @@ pip-shims = "^0.7.3"
 pycln = "^2.1.3"
 pip = "^23.0.1"
 pylint = "^2.17.0"
+djangorestframework-jwt = "^1.11.0"
+rest-framework-simplejwt = "^0.0.1"
+djangorestframework-simplejwt = "^5.2.2"
+drf-spectacular = {extras = ["sidecar"], version = "^0.26.0"}
 
 
 [build-system]
