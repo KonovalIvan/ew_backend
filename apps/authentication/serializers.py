@@ -18,3 +18,21 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("username", "first_name", "last_name", "email", "user_type")
+
+
+class LoginSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+
+    class Meta:
+        model = User
+        fields = ["username", "password"]
+
+
+class BeaverSerializer(serializers.ModelSerializer):
+    access = serializers.CharField(required=True)
+    refresh = serializers.CharField(required=True)
+
+    class Meta:
+        model = User
+        fields = ["access", "refresh"]

@@ -1,21 +1,22 @@
 from typing import Any
 
 from django.contrib.auth import authenticate
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from apps.api.base_auth import NoAuth, TokenAuth
 from apps.authentication.models import User
-from apps.authentication.serializers import UserSerializer
-from swagger.schemas import LoginApiViewSchema, UserApiViewSchema
+from apps.authentication.serializers import (
+    BeaverSerializer,
+    LoginSerializer,
+    UserSerializer,
+)
 
 
-class UserApiView(APIView):
-    permission_classes = (IsAuthenticated,)
+class UserApiView(TokenAuth):
     serializer_class = UserSerializer
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
@@ -25,10 +26,6 @@ class UserApiView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(
-        request_body=UserApiViewSchema.request_body_schema(),
-        responses=UserApiViewSchema.response_schema(),
-    )
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """Create new user"""
         serializer = self.serializer_class(data=request.data, many=True)
@@ -39,19 +36,22 @@ class UserApiView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class LoginApiView(APIView):
-    @swagger_auto_schema(
-        request_body=LoginApiViewSchema.request_body_schema(),
-        responses=LoginApiViewSchema.response_schema(),
+class LoginApiView(NoAuth):
+    serializer_class = LoginSerializer
+
+    @extend_schema(
+        responses={status.HTTP_200_OK: BeaverSerializer},
     )
-    def post(self, request, username, password, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
+        username = request.data.get("username")
+        password = request.data.get("password")
         user = authenticate(username=username, password=password)
         if user is None:
             return Response({"error": "Invalid Credentials"}, status=400)
         refresh = RefreshToken.for_user(user)
         return Response(
             {
-                "access_token": str(refresh.access_token),
-                "refresh_token": str(refresh),
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
             }
         )
