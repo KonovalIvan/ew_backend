@@ -8,7 +8,6 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.api.base_auth import NoAuth, TokenAuth
-from apps.authentication.models import User
 from apps.authentication.serializers import (
     BeaverSerializer,
     LoginSerializer,
@@ -21,8 +20,8 @@ class UserApiView(TokenAuth):
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """Get all users"""
-        users = User.objects.all()
-        serializer = self.serializer_class(users, many=True)
+        user = request.user
+        serializer = self.serializer_class(user, many=False)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
