@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from apps.authentication.consts import UserType
+from apps.authentication.consts import DEFAULT_USER_LANGUAGE, Language, UserType
 from apps.base_models import BaseModel
 
 
@@ -40,6 +40,14 @@ class User(AbstractUser, BaseModel):
         max_length=128,
         default=UserType.CLIENT,
         choices=UserType.choice(),
+        blank=False,
+        null=False,
+    )
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
+    language = models.CharField(
+        max_length=2,
+        default=Language(DEFAULT_USER_LANGUAGE).value,
+        choices=Language.choice(),
         blank=False,
         null=False,
     )

@@ -2,11 +2,11 @@ from django.db import models
 
 from apps.authentication.models import User
 from apps.base_models import BaseModel, TimestampMixin
-from apps.dashboard.models import ProjectDashboard
+from apps.dashboard.models import Dashboard
 from apps.particular_task.consts import image_directory_path
 
 
-class ParticularTask(BaseModel, TimestampMixin):
+class Task(BaseModel, TimestampMixin):
     """
     Model created as card for dashboard
     """
@@ -14,7 +14,7 @@ class ParticularTask(BaseModel, TimestampMixin):
     name = models.CharField(max_length=32, null=False, blank=False)
     description = models.TextField()
     dashboard = models.ForeignKey(
-        ProjectDashboard,
+        Dashboard,
         on_delete=models.SET_NULL,
         related_name="task",
         blank=True,
@@ -22,9 +22,7 @@ class ParticularTask(BaseModel, TimestampMixin):
     )
     status = models.BooleanField(default=False)
     client_accepting = models.BooleanField(default=False)
-    photo = models.ImageField(
-        upload_to=image_directory_path(dashboard=dashboard)
-    )  # type: ignore
+    photo = models.ImageField(upload_to=image_directory_path(dashboard=dashboard))  # type: ignore
 
     # TODO: create deleted_user logic and replace set_null to deleted user
     assign = models.ForeignKey(

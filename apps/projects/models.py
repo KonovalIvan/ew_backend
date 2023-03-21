@@ -6,9 +6,7 @@ from apps.base_models import BaseModel, TimestampMixin
 
 class BuildingProject(BaseModel, TimestampMixin):
     name = models.CharField(max_length=32, null=False, blank=False)
-    address = models.ForeignKey(
-        Address, on_delete=models.SET_NULL, null=True, blank=True
-    )
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     client = models.ForeignKey(
         User,
@@ -38,6 +36,11 @@ class BuildingProject(BaseModel, TimestampMixin):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
+    )
+    finished = models.BooleanField(
+        default=False,
+        null=False,
+        blank=False,
     )
 
     def __str__(self) -> str:
