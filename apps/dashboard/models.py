@@ -4,7 +4,7 @@ from apps.base_models import BaseModel, TimestampMixin
 from apps.projects.models import BuildingProject
 
 
-class ProjectDashboard(BaseModel, TimestampMixin):
+class Dashboard(BaseModel, TimestampMixin):
     """
     This model created as a place to which the user, owner, principal and td will have access.
     Created to see project progress

@@ -1,4 +1,5 @@
 from typing import Any
+from uuid import UUID
 
 from rest_framework import status
 from rest_framework.request import Request
@@ -9,13 +10,61 @@ from apps.projects.selectors import ProjectSelector
 from apps.projects.serializers import ProjectsSerializer
 
 
-class ProjectApiView(TokenAuth):
+class ActiveProjectView(TokenAuth):
+    serializer_class = ProjectsSerializer
+
+    def get(self, request: Request) -> Response:
+        """Get all active projects"""
+        projects = ProjectSelector.get_active_by_owner(owner=request.user)
+
+        return Response(self.serializer_class(projects, many=True).data, status=status.HTTP_200_OK)
+
+    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        """Create new project"""
+        serializer = self.serializer_class(request.data, many=False)
+
+        # TODO: create logic for creating new project
+
+        return Response(self.serializer_class(serializer).data, status=status.HTTP_200_OK)
+
+
+class SingleProjectView(TokenAuth):
+    serializer_class = ProjectsSerializer
+
+    def get(self, request: Request, project_id: UUID) -> Response:
+        """Get expanded project information by ID"""
+        project = ProjectSelector.get_by_id(id=project_id)
+        serializer = self.serializer_class(project, many=False)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request: Request, project_id: UUID) -> Response:
+        """Edit project by ID"""
+        projects = ProjectSelector.get_by_id(id=project_id)
+        serializer = self.serializer_class(projects, many=True)
+        serializer.is_valid()
+
+        # TODO: create edit logic in services
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request: Request, project_id: UUID) -> Response:
+        """Delete project by ID"""
+        projects = ProjectSelector.get_by_id(id=project_id)
+        serializer = self.serializer_class(projects, many=True)
+        serializer.is_valid()
+
+        # TODO: create delete logic in services
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ArchivedProjectView(TokenAuth):
     serializer_class = ProjectsSerializer
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        """Get all users"""
-        user = request.user
-        projects = ProjectSelector.get_all_by_owner(owner=user)
+        """Get all archived projects"""
+        projects = ProjectSelector.get_archived_by_owner(owner=request.user)
         serializer = self.serializer_class(projects, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)

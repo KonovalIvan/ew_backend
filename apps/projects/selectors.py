@@ -13,12 +13,12 @@ class ProjectSelector:
 
     @staticmethod
     def get_all_by_owner(owner: User) -> QuerySet[BuildingProject]:
-        return BuildingProject.objects.get(owner=owner)
+        return BuildingProject.objects.filter(owner=owner)
 
     @staticmethod
     def get_active_by_owner(owner: User) -> QuerySet[BuildingProject]:
-        return BuildingProject.objects.get(owner=owner, finished=False)
+        return BuildingProject.objects.filter(owner=owner, finished=False)
 
     @staticmethod
     def get_archived_by_owner(owner: User) -> QuerySet[BuildingProject]:
-        return BuildingProject.objects.get(owner=owner, finished=True)
+        return BuildingProject.objects.filter(owner=owner, finished=True)

@@ -14,9 +14,17 @@ class AddressSerializer(serializers.ModelSerializer):
         }
 
 
-class UserSerializer(serializers.ModelSerializer):
-    address = AddressSerializer()
+class RegisterUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "username",
+            "email",
+            "password",
+        )
 
+
+class UserShortDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
@@ -24,9 +32,19 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "email",
+        )
+
+
+class UserDetailsSerializer(UserShortDetailsSerializer):
+    address = AddressSerializer()
+
+    class Meta:
+        model = User
+        fields = UserShortDetailsSerializer.Meta.fields + (
+            "first_name",
+            "last_name",
             "user_type",
             "user_type",
-            "groups",
             "language",
             "address",
         )

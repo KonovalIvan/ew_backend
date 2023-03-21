@@ -1,12 +1,17 @@
+from typing import Optional, Tuple
+
 from rest_framework import exceptions
 from rest_framework.authentication import TokenAuthentication, get_authorization_header
 from rest_framework.authtoken.models import Token
+from rest_framework.request import Request
+
+from apps.authentication.models import User
 
 
 class BearerAuthentication(TokenAuthentication):
     keyword = "Bearer"
 
-    def authenticate_credentials(self, key):
+    def authenticate_credentials(self, key: str) -> tuple[User, Token]:
         try:
             token = Token.objects.get(key=key)
         except Token.DoesNotExist:
@@ -15,9 +20,9 @@ class BearerAuthentication(TokenAuthentication):
         if not token.user.is_active:
             raise exceptions.AuthenticationFailed("User inactive or deleted")
 
-        return (token.user, token)
+        return token.user, token
 
-    def authenticate(self, request):
+    def authenticate(self, request: Request) -> Optional[Tuple[User, Token]]:
         auth = get_authorization_header(request).split()
         if not auth or auth[0].lower() != self.keyword.lower().encode():
             return None
@@ -34,5 +39,5 @@ class BearerAuthentication(TokenAuthentication):
 
         return self.authenticate_credentials(token)
 
-    def authenticate_header(self, request):
+    def authenticate_header(self, request: Request) -> str:
         return self.keyword
