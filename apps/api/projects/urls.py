@@ -2,12 +2,12 @@ from django.urls import path
 
 from apps.api.projects.view import (
     ActiveProjectView,
-    ArchivedProjectView,
+    FinishedProjectView,
     SingleProjectView,
 )
 
 urlpatterns = [
     path("active/", ActiveProjectView.as_view(), name="projects-active"),
     path("<uuid:project_id>/", SingleProjectView.as_view(), name="projects-by-id"),
-    path("archived/", ArchivedProjectView.as_view(), name="projects-archived"),
+    path("finished/", FinishedProjectView.as_view(), name="projects-archived"),
 ]

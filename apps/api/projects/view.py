@@ -59,7 +59,7 @@ class SingleProjectView(TokenAuth):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class ArchivedProjectView(TokenAuth):
+class FinishedProjectView(TokenAuth):
     serializer_class = ProjectsSerializer
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
