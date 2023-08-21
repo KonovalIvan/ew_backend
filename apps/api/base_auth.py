@@ -1,6 +1,5 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 class NoAuth(APIView):
@@ -13,5 +12,4 @@ class NoAuth(APIView):
 class TokenAuth(APIView):
     """Ensures user is authenticated"""
 
-    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]

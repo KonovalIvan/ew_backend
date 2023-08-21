@@ -19,6 +19,7 @@ build/
 # Secrets
 secrets/
 env/
+venv/
 
 # Logging
 loggers/

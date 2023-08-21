@@ -1,11 +1,9 @@
 from typing import Any
 
-from django.contrib.auth import authenticate
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.api.base_auth import NoAuth, TokenAuth
 from apps.authentication.serializers import (
@@ -64,15 +62,6 @@ class LoginView(NoAuth):
         responses={status.HTTP_200_OK: BeaverSerializer},
     )
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        username = request.data.get("username")
-        password = request.data.get("password")
-        user = authenticate(username=username, password=password)
-        if user is None:
-            return Response({"error": "Invalid Credentials"}, status=400)
-        refresh = RefreshToken.for_user(user)
-        return Response(
-            {
-                "access": str(refresh.access_token),
-                "refresh": str(refresh),
-            }
-        )
+        # username = request.data.get("username")
+        # password = request.data.get("password")
+        return Response({"soon"})

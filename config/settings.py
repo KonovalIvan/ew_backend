@@ -21,6 +21,7 @@ SECRETS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 # load the environment variables from the .env file
 load_dotenv(os.path.join(SECRETS_DIR, ".env.dev"))
+load_dotenv(os.path.join(SECRETS_DIR, ".env.postgres"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -42,8 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "drf_spectacular",
-    "drf_yasg",
-    "rest_framework_simplejwt",
+    "drf_spectacular_sidecar",
 ]
 
 for app_name in os.listdir("./apps"):
@@ -75,7 +75,7 @@ EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS")
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -108,7 +108,6 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
@@ -163,9 +162,11 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-
 STATIC_URL = os.getenv("STATIC_URL")
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

@@ -1,18 +1,24 @@
-version: '3'
+version: '3.9'
 
 services:
   db:
-    image: postgres
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+    image: "postgis/postgis:12-3.2"
+    env_file:
+      - secrets/.env.postgres
+    ports:
+      - 5432
 
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - secrets/.env.dev
+      - secrets/.env.postgres
     command: python manage.py runserver 0.0.0.0:8000
+    user: root
     volumes:
-      - .:/app
+      - .:/app/
     ports:
       - "8000:8000"
     depends_on:

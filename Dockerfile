@@ -1,24 +1,36 @@
-# Use an official Python runtime as the base image
-FROM python:3.8-alpine
+FROM python:3.10
 
-# Set the working directory in the container to /app
-WORKDIR /app
+# Prevents Python from writing pyc files to disc
+ENV PYTHONDONTWRITEBYTECODE 1
+# Prevents Python from buffering stdout and stderr
+ENV PYTHONUNBUFFERED 1
+ENV PIP_NO_CACHE_DIR 1
+ENV PIP_DISABLE_PIP_VERSION_CHECK 1
+ENV POETRY_VERSION=1.5.1
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+WORKDIR /app/
+RUN apt-get update \
+  && apt-get install --no-install-recommends -y \
+    bash \
+    build-essential \
+    curl \
+    git \
+    libpq-dev \
+    wget \
+  # Cleaning cache:
+  && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-# Install Poetry
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+RUN pip install "poetry==$POETRY_VERSION"
 
-# Copy pyproject.toml and poetry.lock
-COPY pyproject.toml poetry.lock /app/
+# FIXME: fix downloading lib from poetry not from pip
+#COPY ./poetry.lock ./pyproject.toml ./
+#RUN poetry config virtualenvs.create false
+#RUN poetry install
 
-# Install dependencies
-RUN pip install poetry
-RUN poetry install
+COPY ./requirements.txt ./
+RUN pip install -r requirements.txt
 
-# Set environment variables
-ENV DJANGO_SETTINGS_MODULE=config.settings.prod
+COPY . .
 
 # Run command to start the Django server
-CMD ["poetry", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
