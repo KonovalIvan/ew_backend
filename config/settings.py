@@ -21,12 +21,14 @@ SECRETS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 # load the environment variables from the .env file
 load_dotenv(os.path.join(SECRETS_DIR, ".env.dev"))
-load_dotenv(os.path.join(SECRETS_DIR, ".env.postgres"))
+load_dotenv(os.path.join(SECRETS_DIR, ".env.sqllite"))
+# In case usage Postgress db import this env
+# load_dotenv(os.path.join(SECRETS_DIR, ".env.postgres"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# SECURITY KEY
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -91,14 +93,22 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
+# This settings created for Postgres DB, for server i use SQLlite
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": os.getenv("POSTGRES_DB"),
+#         "USER": os.getenv("POSTGRES_USER"),
+#         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+#         "HOST": os.getenv("POSTGRES_HOST"),
+#         "PORT": os.getenv("POSTGRES_PORT"),
+#     }
+# }
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB"),
-        "USER": os.getenv("POSTGRES_USER"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": os.getenv("POSTGRES_HOST"),
-        "PORT": os.getenv("POSTGRES_PORT"),
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, os.getenv("SQLLITE_DB")),
     }
 }
 

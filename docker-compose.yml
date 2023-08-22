@@ -1,25 +1,24 @@
 version: '3.9'
 
 services:
-  db:
-    image: "postgis/postgis:12-3.2"
-    env_file:
-      - secrets/.env.postgres
-    ports:
-      - 5432
-
+# In case we use as DB Postgres
+#  db:
+#    image: "postgis/postgis:12-3.2"
+#    env_file:
+#      - secrets/.env.postgres
+#    ports:
+#      - 5432
   web:
     build:
       context: .
       dockerfile: Dockerfile
     env_file:
       - secrets/.env.dev
-      - secrets/.env.postgres
     command: python manage.py runserver 0.0.0.0:8000
     user: root
     volumes:
       - .:/app/
     ports:
       - "8000:8000"
-    depends_on:
-      - db
+#    depends_on:
+#      - db
