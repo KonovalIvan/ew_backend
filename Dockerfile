@@ -20,9 +20,10 @@ RUN apt-get update \
   # Cleaning cache:
   && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-RUN pip install "poetry==$POETRY_VERSION"
 
 # FIXME: fix downloading lib from poetry not from pip
+#RUN pip install "poetry==$POETRY_VERSION"
+
 #COPY ./poetry.lock ./pyproject.toml ./
 #RUN poetry config virtualenvs.create false
 #RUN poetry install
@@ -33,4 +34,4 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Run command to start the Django server
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["sh", "-c", "python manage.py runserver"]

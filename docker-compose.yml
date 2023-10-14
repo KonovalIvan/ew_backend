@@ -1,13 +1,13 @@
 version: '3.9'
 
 services:
-# In case we use as DB Postgres
-#  db:
-#    image: "postgis/postgis:12-3.2"
-#    env_file:
-#      - secrets/.env.postgres
-#    ports:
-#      - 5432
+  db:
+    image: "postgis/postgis:12-3.2"
+    env_file:
+      - secrets/.env.postgres
+    ports:
+      - "5432"
+
   web:
     build:
       context: .
@@ -15,10 +15,26 @@ services:
     env_file:
       - secrets/.env.dev
     command: python manage.py runserver 0.0.0.0:8000
+    container_name: web
     user: root
     volumes:
       - .:/app/
     ports:
       - "8000:8000"
-#    depends_on:
-#      - db
+    depends_on:
+      - ngrok
+      - db
+
+# FIXME: add new container ngrok to connect localhost
+#  ngrok:
+#    image: wernight/ngrok
+#    restart: unless-stopped
+#    ports:
+#      - "4040:4040"
+#    volumes:
+#      - ./.ngrok.yml:/ngrok/.ngrok.yml
+#      - ./secrets/.env.ngrok:/ngrok/.env.ngrok
+#    command:
+#      - "/bin/sh"
+#      - "-c"
+#      - "ngrok start --config /ngrok/.ngrok.yml --all"
