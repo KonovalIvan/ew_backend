@@ -3,6 +3,7 @@ from uuid import UUID
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from apps.api.base_auth import TokenAuth
 from apps.dashboard.selectors import DashboardSelector
@@ -10,7 +11,7 @@ from apps.particular_task.selectors import TaskSelector
 from apps.particular_task.serializers import TaskSerializer
 
 
-class TaskView(TokenAuth):
+class TaskView(TokenAuth, APIView):
     serializer_class = TaskSerializer
 
     def get(self, request: Request, dashboard_id: UUID) -> Response:
@@ -31,7 +32,7 @@ class TaskView(TokenAuth):
         return Response(self.serializer_class(dashboard).data, status=status.HTTP_200_OK)
 
 
-class SingleTaskView(TokenAuth):
+class SingleTaskView(TokenAuth, APIView):
     serializer_class = TaskSerializer
 
     def get(self, request: Request, task_id: UUID) -> Response:

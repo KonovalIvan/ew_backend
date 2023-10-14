@@ -1,10 +1,16 @@
 from django.contrib import admin
 
-from apps.authentication.models import User, Address
+from apps.authentication.models import Address, User
 
 
 class UserAdmin(admin.ModelAdmin):
-    pass
+    model = User
+    list_display = (
+        "username",
+        "first_name",
+        "last_name",
+        "email",
+    )
 
 
 class AddressAdmin(admin.ModelAdmin):

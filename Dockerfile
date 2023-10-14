@@ -34,4 +34,4 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Run command to start the Django server
-CMD ["sh", "-c", "python manage.py runserver"]
+CMD ["sh", "-c", "python manage.py runserver 0.0.0.0:8000"]

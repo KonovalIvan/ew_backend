@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "drf_spectacular",
     "drf_spectacular_sidecar",
+    "rest_framework.authtoken",
 ]
 
 for app_name in os.listdir("./apps"):
@@ -91,7 +92,6 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
-# This settings created for Postgres DB, for server i use SQLlite
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -103,6 +103,8 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = "authentication.User"
+
 # Rest framework
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
@@ -110,6 +112,10 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ],
+    "TOKEN_EXPIRY": {
+        "ACCESS_TOKEN_LIFETIME": 60 * 60 * 24 * 10,  # 10 day in seconds
+        "REFRESH_TOKEN_LIFETIME": 60 * 60 * 24 * 30,  # 30 day in seconds
+    },
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],

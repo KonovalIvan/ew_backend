@@ -59,7 +59,7 @@ class LoginSerializer(serializers.ModelSerializer):
         fields = ["username", "password"]
 
 
-class BeaverSerializer(serializers.ModelSerializer):
+class TokenSerializer(serializers.ModelSerializer):
     access = serializers.CharField(required=True)
     refresh = serializers.CharField(required=True)
 

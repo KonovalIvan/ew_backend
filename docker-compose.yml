@@ -22,7 +22,6 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - ngrok
       - db
 
 # FIXME: add new container ngrok to connect localhost

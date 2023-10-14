@@ -4,13 +4,14 @@ from uuid import UUID
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from apps.api.base_auth import TokenAuth
 from apps.projects.selectors import ProjectSelector
 from apps.projects.serializers import ProjectsSerializer
 
 
-class ActiveProjectView(TokenAuth):
+class ActiveProjectView(TokenAuth, APIView):
     serializer_class = ProjectsSerializer
 
     def get(self, request: Request) -> Response:
@@ -28,7 +29,7 @@ class ActiveProjectView(TokenAuth):
         return Response(self.serializer_class(serializer).data, status=status.HTTP_200_OK)
 
 
-class SingleProjectView(TokenAuth):
+class SingleProjectView(TokenAuth, APIView):
     serializer_class = ProjectsSerializer
 
     def get(self, request: Request, project_id: UUID) -> Response:
@@ -59,7 +60,7 @@ class SingleProjectView(TokenAuth):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class FinishedProjectView(TokenAuth):
+class FinishedProjectView(TokenAuth, APIView):
     serializer_class = ProjectsSerializer
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
