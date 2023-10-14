@@ -41,3 +41,16 @@ class BearerAuthentication(TokenAuthentication):
 
     def authenticate_header(self, request: Request) -> str:
         return self.keyword
+
+
+class AuthenticationServices:
+    @staticmethod
+    def create_user(user_data: dict) -> User:
+        user = User.objects.create(
+            username=user_data["username"],
+            email=user_data["email"],
+        )
+        user.set_password(user_data["password"])
+        user.save()
+
+        return user

@@ -7,7 +7,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.api.base_auth import TokenAuth
+from apps.api.base_auth import NoAuth, TokenAuth
 from apps.authentication.models import User
 from apps.authentication.selectors import UserSelector
 from apps.authentication.serializers import (
@@ -16,6 +16,7 @@ from apps.authentication.serializers import (
     TokenSerializer,
     UserDetailsSerializer,
 )
+from apps.authentication.services import AuthenticationServices
 
 
 class UserDetailsView(TokenAuth, APIView):
@@ -51,15 +52,16 @@ class RegisterUserView(TokenAuth, APIView):
 
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """Create new user"""
-        serializer = self.serializer_class(data=request.data, many=True)
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
+            user_data = serializer.validated_data
+            AuthenticationServices.create_user(user_data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class LoginView(APIView):
+class LoginView(NoAuth, APIView):
     serializer_class = LoginSerializer
 
     @extend_schema(
