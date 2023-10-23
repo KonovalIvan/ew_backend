@@ -17,3 +17,8 @@ class ProjectsSerializer(serializers.ModelSerializer):
     class Meta:
         model = BuildingProject
         fields = "__all__"
+
+
+class ProjectsProgressSerializer(serializers.Serializer):
+    active_projects = serializers.IntegerField(help_text="Count all active projects")
+    active_tasks = serializers.IntegerField(help_text="All project progress information")

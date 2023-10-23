@@ -15,13 +15,20 @@ class AddressSerializer(serializers.ModelSerializer):
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
+    confirm_password = serializers.CharField(max_length=128)
+
     class Meta:
         model = User
         fields = (
-            "username",
             "email",
             "password",
+            "confirm_password",
         )
+
+    def validate(self, data):
+        if data.get("password") != data.get("confirm_password"):
+            raise serializers.ValidationError("Passwords are different.")
+        return data
 
 
 class UserShortDetailsSerializer(serializers.ModelSerializer):
@@ -35,18 +42,15 @@ class UserShortDetailsSerializer(serializers.ModelSerializer):
         )
 
 
-class UserDetailsSerializer(UserShortDetailsSerializer):
-    address = AddressSerializer()
+class UserMainDetailsSerializer(UserShortDetailsSerializer):
+    active_projects = serializers.IntegerField(help_text="Count all active projects")
+    progress = serializers.DecimalField(help_text="All project progress information", decimal_places=2, max_digits=1000)
 
     class Meta:
         model = User
         fields = UserShortDetailsSerializer.Meta.fields + (
-            "first_name",
-            "last_name",
-            "user_type",
-            "user_type",
-            "language",
-            "address",
+            "active_projects",
+            "progress",
         )
 
 
@@ -60,9 +64,9 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 class TokenSerializer(serializers.ModelSerializer):
-    access = serializers.CharField(required=True)
-    refresh = serializers.CharField(required=True)
+    token = serializers.CharField(required=True)
+    refresh_token = serializers.CharField(required=True)
 
     class Meta:
         model = User
-        fields = ["access", "refresh"]
+        fields = ["token", "refresh_token"]

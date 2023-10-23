@@ -10,6 +10,8 @@ from apps.dashboard.selectors import DashboardSelector
 from apps.particular_task.selectors import TaskSelector
 from apps.particular_task.serializers import TaskSerializer
 
+# ---------------------------------------NOT USED YET-------------------------------------------------------------
+
 
 class TaskView(TokenAuth, APIView):
     serializer_class = TaskSerializer

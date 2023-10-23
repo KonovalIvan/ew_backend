@@ -31,7 +31,7 @@ class BuildingProject(BaseModel, TimestampMixin):
     )
     owner = models.ForeignKey(
         User,
-        help_text="Company realized this project",
+        help_text="Person who create this project",
         related_name="owner_project",
         on_delete=models.SET_NULL,
         null=True,

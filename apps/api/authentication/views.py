@@ -8,19 +8,51 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.api.base_auth import NoAuth, TokenAuth
-from apps.authentication.models import User
 from apps.authentication.selectors import UserSelector
 from apps.authentication.serializers import (
     LoginSerializer,
     RegisterUserSerializer,
     TokenSerializer,
-    UserDetailsSerializer,
+    UserShortDetailsSerializer,
 )
 from apps.authentication.services import AuthenticationServices
 
 
+class LoginView(NoAuth, APIView):
+    serializer_class = LoginSerializer
+
+    @extend_schema(
+        responses={status.HTTP_200_OK: TokenSerializer},
+    )
+    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        serializer = self.serializer_class(data=request.data, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+        if not (
+            user := UserSelector.get_by_username_or_none(
+                username=serializer.validated_data["username"],
+            )
+        ) or not user.check_password(serializer.validated_data["password"]):
+            return Response({"error_msg": "Invalid username or password."}, status=status.HTTP_400_BAD_REQUEST)
+        token, created = Token.objects.get_or_create(user=user)
+        return Response(
+            {
+                "access_token": token.key,
+                "refresh_token": user.auth_token.key,
+            }
+        )
+
+
+class VerifyTokenView(TokenAuth, APIView):
+    """
+    View for the first shot after firing up the application. If token doesn't walid user must login
+    """
+
+    def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        return Response({"message": "Token is valid"}, status=status.HTTP_200_OK)
+
+
 class UserDetailsView(TokenAuth, APIView):
-    serializer_class = UserDetailsSerializer
+    serializer_class = UserShortDetailsSerializer
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """Get user info"""
@@ -28,6 +60,8 @@ class UserDetailsView(TokenAuth, APIView):
         serializer = self.serializer_class(user, many=False)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # ---------------------------------------NOT USED YET-------------------------------------------------------------
 
     def delete(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """Delete user"""
@@ -47,44 +81,13 @@ class UserDetailsView(TokenAuth, APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class RegisterUserView(TokenAuth, APIView):
+class RegisterUserView(NoAuth, APIView):
     serializer_class = RegisterUserSerializer
 
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """Create new user"""
         serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user_data = serializer.validated_data
-            AuthenticationServices.create_user(user_data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class LoginView(NoAuth, APIView):
-    serializer_class = LoginSerializer
-
-    @extend_schema(
-        responses={status.HTTP_200_OK: TokenSerializer},
-    )
-    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        serializer = self.serializer_class(data=request.data, context={"request": request})
-        if serializer.is_valid():
-            try:
-                user = UserSelector.get_by_username(
-                    username=serializer.validated_data["username"],
-                )
-                if not user.check_password(serializer.validated_data["password"]):
-                    raise User.DoesNotExist
-            except User.DoesNotExist:
-                return Response(
-                    {"non_field_errors": ["Invalid username or password."]}, status=status.HTTP_400_BAD_REQUEST
-                )
-            token, created = Token.objects.get_or_create(user=user)
-            return Response(
-                {
-                    "token": token.key,
-                    "refresh_token": user.auth_token.key,
-                }
-            )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        user_data = serializer.validated_data
+        AuthenticationServices.create_user(user_data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

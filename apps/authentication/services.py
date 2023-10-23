@@ -5,7 +5,9 @@ from rest_framework.authentication import TokenAuthentication, get_authorization
 from rest_framework.authtoken.models import Token
 from rest_framework.request import Request
 
+from apps.authentication.exceptions import UserExistException
 from apps.authentication.models import User
+from apps.authentication.selectors import UserSelector
 
 
 class BearerAuthentication(TokenAuthentication):
@@ -46,9 +48,13 @@ class BearerAuthentication(TokenAuthentication):
 class AuthenticationServices:
     @staticmethod
     def create_user(user_data: dict) -> User:
+        email = user_data["email"]
+        if UserSelector.get_by_username_or_none(email):
+            raise UserExistException
+
         user = User.objects.create(
-            username=user_data["username"],
-            email=user_data["email"],
+            username=email,
+            email=email,
         )
         user.set_password(user_data["password"])
         user.save()

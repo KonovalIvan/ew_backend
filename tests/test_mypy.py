@@ -16,7 +16,4 @@ def test_mypy() -> None:
         output = result.stdout.decode("utf-8").replace("\r\n", "\n\t")
         errors = result.stderr.decode("utf-8").replace("\r\n", "\n\t")
         error_messages = f"stdout:\n\t{output}\nstderr:\n\t{errors}"
-        raise MypyError(
-            f"mypy failed with return code {result.returncode}"
-            f"\n{error_messages}"
-        )
+        raise MypyError(f"mypy failed with return code {result.returncode}" f"\n{error_messages}")

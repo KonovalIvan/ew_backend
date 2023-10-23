@@ -8,7 +8,25 @@ from rest_framework.views import APIView
 
 from apps.api.base_auth import TokenAuth
 from apps.projects.selectors import ProjectSelector
-from apps.projects.serializers import ProjectsSerializer
+from apps.projects.serializers import ProjectsProgressSerializer, ProjectsSerializer
+from apps.projects.services import ProjectsProgressServices
+
+
+class ActiveProjectsAndTasksView(TokenAuth, APIView):
+    serializer_class = ProjectsProgressSerializer
+
+    def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        """Get count of active projects and active tasks"""
+        user = request.user
+        active_projects, active_tasks = ProjectsProgressServices.get_count_of_active_projects_and_tasks(user=user)
+        data_to_serialize = {"active_projects": active_projects, "active_tasks": active_tasks}
+        serializer = self.serializer_class(data=data_to_serialize)
+        serializer.is_valid(raise_exception=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# ---------------------------------------NOT USED YET-------------------------------------------------------------
 
 
 class ActiveProjectView(TokenAuth, APIView):

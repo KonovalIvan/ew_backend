@@ -20,7 +20,7 @@ class Task(BaseModel, TimestampMixin):
         blank=True,
         null=True,
     )
-    status = models.BooleanField(default=False)
+    finished = models.BooleanField(default=False)
     client_accepting = models.BooleanField(default=False)
     photo = models.ImageField(upload_to=image_directory_path(dashboard=dashboard))  # type: ignore
 
@@ -28,7 +28,14 @@ class Task(BaseModel, TimestampMixin):
     assign = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
-        related_name="task",
+        related_name="task_assign",
+        null=True,
+        blank=True,
+    )
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name="task_owner",
         null=True,
         blank=True,
     )
