@@ -1,7 +1,7 @@
 from django.db import models
 
 from apps.base_models import BaseModel, TimestampMixin
-from apps.projects.models import BuildingProject
+from apps.projects.models import Project
 
 
 class Dashboard(BaseModel, TimestampMixin):
@@ -12,7 +12,7 @@ class Dashboard(BaseModel, TimestampMixin):
 
     name = models.CharField(max_length=32, null=False, blank=False)
     project = models.OneToOneField(
-        BuildingProject,
+        Project,
         on_delete=models.SET_NULL,
         related_name="dashboard",
         null=True,

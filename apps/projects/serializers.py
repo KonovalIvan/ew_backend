@@ -4,7 +4,19 @@ from apps.authentication.serializers import (
     AddressSerializer,
     UserShortDetailsSerializer,
 )
-from apps.projects.models import BuildingProject
+from apps.projects.models import Project
+
+
+class ProjectsShortInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = (
+            "id",
+            "name",
+            "main_image",
+            "description",
+            "finished",
+        )
 
 
 class ProjectsSerializer(serializers.ModelSerializer):
@@ -15,10 +27,10 @@ class ProjectsSerializer(serializers.ModelSerializer):
     designer = UserShortDetailsSerializer()
 
     class Meta:
-        model = BuildingProject
+        model = Project
         fields = "__all__"
 
 
-class ProjectsProgressSerializer(serializers.Serializer):
+class ActiveProjectsAndTasksSerializer(serializers.Serializer):
     active_projects = serializers.IntegerField(help_text="Count all active projects")
     active_tasks = serializers.IntegerField(help_text="All project progress information")

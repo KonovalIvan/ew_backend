@@ -8,12 +8,16 @@ from rest_framework.views import APIView
 
 from apps.api.base_auth import TokenAuth
 from apps.projects.selectors import ProjectSelector
-from apps.projects.serializers import ProjectsProgressSerializer, ProjectsSerializer
+from apps.projects.serializers import (
+    ActiveProjectsAndTasksSerializer,
+    ProjectsSerializer,
+    ProjectsShortInfoSerializer,
+)
 from apps.projects.services import ProjectsProgressServices
 
 
 class ActiveProjectsAndTasksView(TokenAuth, APIView):
-    serializer_class = ProjectsProgressSerializer
+    serializer_class = ActiveProjectsAndTasksSerializer
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """Get count of active projects and active tasks"""
@@ -26,6 +30,17 @@ class ActiveProjectsAndTasksView(TokenAuth, APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class ProjectsShortInfoView(TokenAuth, APIView):
+    serializer_class = ProjectsShortInfoSerializer
+
+    def get(self, request: Request) -> Response:
+        """Get all projects and return short info, name image and description"""
+        projects = ProjectSelector.get_all_by_user(user=request.user)
+        projects.order_by("-created_at")
+
+        return Response(self.serializer_class(projects, many=True).data, status=status.HTTP_200_OK)
+
+
 # ---------------------------------------NOT USED YET-------------------------------------------------------------
 
 
@@ -34,7 +49,7 @@ class ActiveProjectView(TokenAuth, APIView):
 
     def get(self, request: Request) -> Response:
         """Get all active projects"""
-        projects = ProjectSelector.get_active_by_owner(owner=request.user)
+        projects = ProjectSelector.get_active_by_user(user=request.user)
 
         return Response(self.serializer_class(projects, many=True).data, status=status.HTTP_200_OK)
 
@@ -83,7 +98,7 @@ class FinishedProjectView(TokenAuth, APIView):
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """Get all archived projects"""
-        projects = ProjectSelector.get_archived_by_owner(owner=request.user)
+        projects = ProjectSelector.get_archived_by_user(user=request.user)
         serializer = self.serializer_class(projects, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)

@@ -26,3 +26,6 @@ loggers/
 
 # Database
 db.sqllite3
+
+# media
+media/

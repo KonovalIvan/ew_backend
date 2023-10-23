@@ -3,7 +3,7 @@ from uuid import UUID
 from django.db.models import QuerySet
 
 from apps.dashboard.models import Dashboard
-from apps.projects.models import BuildingProject
+from apps.projects.models import Project
 
 
 class DashboardSelector:
@@ -12,5 +12,5 @@ class DashboardSelector:
         return Dashboard.objects.get(id=id)
 
     @staticmethod
-    def get_all_by_project(project: BuildingProject) -> QuerySet[Dashboard]:
+    def get_all_by_project(project: Project) -> QuerySet[Dashboard]:
         return Dashboard.objects.filter(project=project)
