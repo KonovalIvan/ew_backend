@@ -1,24 +1,24 @@
 from uuid import UUID
 
-from django.db.models import QuerySet
+from django.db.models import Q, QuerySet
 
 from apps.authentication.models import User
-from apps.projects.models import BuildingProject
+from apps.projects.models import Project
 
 
 class ProjectSelector:
     @staticmethod
-    def get_by_id(id: UUID) -> BuildingProject:
-        return BuildingProject.objects.get(id=id)
+    def get_by_id(id: UUID) -> Project:
+        return Project.objects.get(id=id)
 
     @staticmethod
-    def get_all_by_owner(owner: User) -> QuerySet[BuildingProject]:
-        return BuildingProject.objects.filter(owner=owner)
+    def get_all_by_user(user: User) -> QuerySet[Project]:
+        return Project.objects.filter(Q(client=user) | Q(designer=user) | Q(building_master=user))
 
     @staticmethod
-    def get_active_by_owner(owner: User) -> QuerySet[BuildingProject]:
-        return BuildingProject.objects.filter(owner=owner, finished=False)
+    def get_active_by_user(user: User) -> QuerySet[Project]:
+        return Project.objects.filter(Q(client=user) | Q(designer=user) | Q(building_master=user), finished=False)
 
     @staticmethod
-    def get_archived_by_owner(owner: User) -> QuerySet[BuildingProject]:
-        return BuildingProject.objects.filter(owner=owner, finished=True)
+    def get_archived_by_user(user: User) -> QuerySet[Project]:
+        return Project.objects.filter(Q(client=user) | Q(designer=user) | Q(building_master=user), finished=True)

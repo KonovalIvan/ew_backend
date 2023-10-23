@@ -16,12 +16,12 @@ from apps.particular_task.serializers import TaskSerializer
 class TaskView(TokenAuth, APIView):
     serializer_class = TaskSerializer
 
-    def get(self, request: Request, dashboard_id: UUID) -> Response:
-        """Get all tasks for dashboard"""
-        dashboard = DashboardSelector.get_by_id(id=dashboard_id)
-        tasks = TaskSelector.get_all_by_dashboard(dashboard=dashboard)
-
-        return Response(self.serializer_class(tasks).data, status=status.HTTP_200_OK)
+    # def get(self, request: Request, dashboard_id: UUID) -> Response:
+    #     """Get all tasks for dashboard"""
+    #     dashboard = DashboardSelector.get_by_id(id=dashboard_id)
+    #     tasks = TaskSelector.get_all_by_dashboard(dashboard=dashboard)
+    #
+    #     return Response(self.serializer_class(tasks).data, status=status.HTTP_200_OK)
 
     def post(self, request: Request, dashboard_id: UUID) -> Response:
         """Create new task for dashboard"""
