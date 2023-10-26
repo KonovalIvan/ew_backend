@@ -6,21 +6,14 @@ from apps.base_services import generate_random_filename_for_project
 
 
 class Project(BaseModel, TimestampMixin):
+    # TODO: Add progress field and signal auto update when task finished
     name = models.CharField(max_length=32, null=False, blank=False)
     address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     main_image = models.ImageField(
         upload_to=generate_random_filename_for_project,
-        null=True,
-        blank=True,
     )
-    client = models.ForeignKey(
-        User,
-        related_name="user_project",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
+    client = models.CharField(max_length=20, null=True, blank=True)
     designer = models.ForeignKey(
         User,
         help_text="Person who create this project",
@@ -51,7 +44,11 @@ class Project(BaseModel, TimestampMixin):
 
 
 class ProjectGallery(BaseModel, TimestampMixin):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name="project_gallery",
+    )
     image = models.ImageField(
         upload_to=generate_random_filename_for_project,
         null=True,

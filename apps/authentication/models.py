@@ -10,11 +10,23 @@ class Address(BaseModel):
     That model serve for addresses
     """
 
-    address_line_1 = models.CharField(max_length=128, blank=True, null=True)
-    address_line_2 = models.CharField(max_length=128, blank=True, null=True)
-    post_code = models.CharField(max_length=32, blank=True, null=True)
-    city = models.CharField(max_length=256, blank=True, null=True)
-    country = models.CharField(max_length=256, blank=True, null=True)
+    address_line_1 = models.CharField(
+        max_length=128,
+    )
+    address_line_2 = models.CharField(
+        max_length=128,
+        blank=True,
+        null=True,
+    )
+    post_code = models.CharField(
+        max_length=32,
+    )
+    city = models.CharField(
+        max_length=256,
+    )
+    country = models.CharField(
+        max_length=256,
+    )
 
     class Meta:
         verbose_name_plural = "addresses"

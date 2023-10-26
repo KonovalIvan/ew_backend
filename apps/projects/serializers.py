@@ -1,10 +1,8 @@
 from rest_framework import serializers
 
-from apps.authentication.serializers import (
-    AddressSerializer,
-    UserShortDetailsSerializer,
-)
-from apps.projects.models import Project
+from apps.authentication.serializers import AddressSerializer, UserDetailsSerializer
+from apps.dashboard.serializers import DashboardSerializer
+from apps.projects.models import Project, ProjectGallery
 
 
 class ProjectsShortInfoSerializer(serializers.ModelSerializer):
@@ -19,16 +17,37 @@ class ProjectsShortInfoSerializer(serializers.ModelSerializer):
         )
 
 
+class ProjectGallerySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectGallery
+        fields = (
+            "id",
+            "image",
+        )
+
+
 class ProjectsSerializer(serializers.ModelSerializer):
+    designer = UserDetailsSerializer()
+    building_master = UserDetailsSerializer()
+    client = serializers.CharField(help_text="Here we add phone number of client", max_length=20)
     address = AddressSerializer()
-    client = UserShortDetailsSerializer()
-    owner = UserShortDetailsSerializer()
-    building_master = UserShortDetailsSerializer()
-    designer = UserShortDetailsSerializer()
+    dashboard = DashboardSerializer(many=True)
+    project_gallery = ProjectGallerySerializer(many=True)
 
     class Meta:
         model = Project
-        fields = "__all__"
+        fields = (
+            "id",
+            "name",
+            "description",
+            "designer",
+            "building_master",
+            "client",
+            "address",
+            "dashboard",
+            "project_gallery",
+            "finished",
+        )
 
 
 class ActiveProjectsAndTasksSerializer(serializers.Serializer):
