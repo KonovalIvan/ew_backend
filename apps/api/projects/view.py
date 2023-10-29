@@ -41,27 +41,6 @@ class ProjectsShortInfoView(TokenAuth, APIView):
         return Response(self.serializer_class(projects, many=True).data, status=status.HTTP_200_OK)
 
 
-# ---------------------------------------NOT USED YET-------------------------------------------------------------
-
-
-class ActiveProjectView(TokenAuth, APIView):
-    serializer_class = ProjectsSerializer
-
-    def get(self, request: Request) -> Response:
-        """Get all active projects"""
-        projects = ProjectSelector.get_active_by_user(user=request.user)
-
-        return Response(self.serializer_class(projects, many=True).data, status=status.HTTP_200_OK)
-
-    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        """Create new project"""
-        serializer = self.serializer_class(request.data, many=False)
-
-        # TODO: create logic for creating new project
-
-        return Response(self.serializer_class(serializer).data, status=status.HTTP_200_OK)
-
-
 class SingleProjectView(TokenAuth, APIView):
     serializer_class = ProjectsSerializer
 
@@ -69,8 +48,9 @@ class SingleProjectView(TokenAuth, APIView):
         """Get expanded project information by ID"""
         project = ProjectSelector.get_by_id(id=project_id)
         serializer = self.serializer_class(project, many=False)
-
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # ---------------------------------------NOT USED YET-------------------------------------------------------------
 
     def put(self, request: Request, project_id: UUID) -> Response:
         """Edit project by ID"""
@@ -91,6 +71,24 @@ class SingleProjectView(TokenAuth, APIView):
         # TODO: create delete logic in services
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ActiveProjectView(TokenAuth, APIView):
+    serializer_class = ProjectsSerializer
+
+    def get(self, request: Request) -> Response:
+        """Get all active projects"""
+        projects = ProjectSelector.get_active_by_user(user=request.user)
+
+        return Response(self.serializer_class(projects, many=True).data, status=status.HTTP_200_OK)
+
+    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        """Create new project"""
+        serializer = self.serializer_class(request.data, many=False)
+
+        # TODO: create logic for creating new project
+
+        return Response(self.serializer_class(serializer).data, status=status.HTTP_200_OK)
 
 
 class FinishedProjectView(TokenAuth, APIView):

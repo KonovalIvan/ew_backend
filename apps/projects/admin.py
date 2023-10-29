@@ -1,17 +1,13 @@
 from django.contrib import admin
 
-from apps.projects.models import Project, ProjectGallery
-
-
-class ProjectGalleryInline(admin.TabularInline):
-    model = ProjectGallery
-    extra = 0
+from apps.images.admin import ImageAssetInline
+from apps.projects.models import Project
 
 
 class ProjectAdmin(admin.ModelAdmin):
     readonly_fields = ("designer",)
     inlines = [
-        ProjectGalleryInline,
+        ImageAssetInline,
     ]
 
     def save_model(self, request, obj, form, change):
@@ -21,4 +17,3 @@ class ProjectAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Project, ProjectAdmin)
-admin.site.register(ProjectGallery)

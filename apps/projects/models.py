@@ -41,16 +41,3 @@ class Project(BaseModel, TimestampMixin):
 
     def short_description(self) -> str:
         return self.description[:128] if self.description else "No description"
-
-
-class ProjectGallery(BaseModel, TimestampMixin):
-    project = models.ForeignKey(
-        Project,
-        on_delete=models.CASCADE,
-        related_name="project_gallery",
-    )
-    image = models.ImageField(
-        upload_to=generate_random_filename_for_project,
-        null=True,
-        blank=True,
-    )
