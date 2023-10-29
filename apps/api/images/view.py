@@ -13,7 +13,7 @@ from apps.images.services import ImageAssetServices
 class ImageAssetView(TokenAuth, APIView):
     def delete(self, request: Request, image_id: UUID, *args: Any, **kwargs: Any) -> Response:
         """Delete image from db by id"""
-        success = ImageAssetServices.remove_single_image_by_id(image_id=image_id)
+        success = ImageAssetServices.delete_single_image_by_id(image_id=image_id)
         return (
             Response(status=status.HTTP_204_NO_CONTENT)
             if success
