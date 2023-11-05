@@ -42,6 +42,27 @@ class ProjectsSerializer(serializers.ModelSerializer):
         )
 
 
+class NewProjectsSerializer(serializers.ModelSerializer):
+    designer_email = serializers.CharField(help_text="Designer email", max_length=20, required=False, allow_blank=True)
+    building_master_email = serializers.CharField(
+        help_text="Building master email", max_length=20, required=False, allow_blank=True
+    )
+    client_phone = serializers.CharField(help_text="Client email", max_length=20, required=False, allow_blank=True)
+    address = AddressSerializer(required=False, allow_null=True)
+    description = serializers.CharField(allow_blank=True)
+
+    class Meta:
+        model = Project
+        fields = (
+            "name",
+            "designer_email",
+            "building_master_email",
+            "client_phone",
+            "description",
+            "address",
+        )
+
+
 class ActiveProjectsAndTasksSerializer(serializers.Serializer):
     active_projects = serializers.IntegerField(help_text="Count all active projects")
     active_tasks = serializers.IntegerField(help_text="All project progress information")

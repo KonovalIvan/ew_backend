@@ -1,6 +1,7 @@
 import uuid
 
 from apps.authentication.models import User
+from apps.authentication.services import AddressServices
 from apps.particular_task.selectors import TaskSelector
 from apps.projects.models import Project
 from apps.projects.selectors import ProjectSelector
@@ -15,10 +16,27 @@ class ProjectsServices:
         return active_projects.count() if active_projects else 0, active_tasks.count() if active_tasks else 0
 
     @staticmethod
-    def delete_single_project_by_id(project_id: uuid):
+    def delete_single_project_by_id(project_id: uuid) -> bool:
         try:
             project = ProjectSelector.get_by_id(id=project_id)
             project.delete()
             return True
         except Project.DoesNotExist:
             return False
+
+    @staticmethod
+    def create_project(data: dict) -> Project:
+        address = None
+        if "address" in data and not data["address"]:
+            address = AddressServices.create_address(address_data=data["address"])
+        designer = User.objects.filter(username=data["designer_email"]).first()
+        master = User.objects.filter(username=data["building_master_email"]).first()
+        return Project.objects.create(
+            name=data["name"],
+            address=address,
+            description=data["description"],
+            client=data["client_phone"],
+            designer=designer,
+            building_master=master,
+            finished=False,
+        )

@@ -6,7 +6,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.request import Request
 
 from apps.authentication.exceptions import UserExistException
-from apps.authentication.models import User
+from apps.authentication.models import Address, User
 from apps.authentication.selectors import UserSelector
 
 
@@ -60,3 +60,17 @@ class AuthenticationServices:
         user.save()
 
         return user
+
+
+class AddressServices:
+    @staticmethod
+    def create_address(address_data: dict) -> Address:
+        # TODO: Add validators for creating address
+        address = Address.objects.create(
+            address_line_1=address_data["address_line_1"],
+            address_line_2=getattr(address_data["address_line_2"], ""),
+            post_code=address_data["post_code"],
+            city=address_data["city"],
+            country=address_data["country"],
+        )
+        return address

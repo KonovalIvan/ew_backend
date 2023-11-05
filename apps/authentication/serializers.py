@@ -4,6 +4,8 @@ from apps.authentication.models import Address, User
 
 
 class AddressSerializer(serializers.ModelSerializer):
+    address_line_2 = serializers.CharField(allow_blank=True)
+
     class Meta:
         model = Address
         fields = (

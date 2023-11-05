@@ -1,6 +1,7 @@
 from typing import Any
 from uuid import UUID
 
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -10,6 +11,7 @@ from apps.api.base_auth import TokenAuth
 from apps.projects.selectors import ProjectSelector
 from apps.projects.serializers import (
     ActiveProjectsAndTasksSerializer,
+    NewProjectsSerializer,
     ProjectsSerializer,
     ProjectsShortInfoSerializer,
 )
@@ -39,6 +41,26 @@ class ProjectsShortInfoView(TokenAuth, APIView):
         projects.order_by("-created_at")
 
         return Response(self.serializer_class(projects, many=True).data, status=status.HTTP_200_OK)
+
+
+class AddProjectView(TokenAuth, APIView):
+    serializer_class = NewProjectsSerializer
+    response_serializer = ProjectsSerializer
+
+    @swagger_auto_schema(
+        request_body=NewProjectsSerializer,
+        responses={
+            status.HTTP_201_CREATED: serializer_class,
+            status.HTTP_400_BAD_REQUEST: "Bad request data.",
+        },
+    )
+    def post(self, request: Request):
+        """Create new parking"""
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        response = ProjectsServices.create_project(serializer.validated_data)
+        return Response(self.response_serializer(response).data, status=status.HTTP_201_CREATED)
 
 
 class SingleProjectView(TokenAuth, APIView):
