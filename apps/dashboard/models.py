@@ -18,7 +18,10 @@ class Dashboard(BaseModel, TimestampMixin):
         null=True,
         blank=True,
     )
-    description = models.TextField()
+    description = models.TextField(
+        null=True,
+        blank=True,
+    )
 
     def __str__(self) -> str:
         return f"{self.name}"
