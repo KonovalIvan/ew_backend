@@ -8,13 +8,13 @@ from rest_framework.views import APIView
 from apps.api.base_auth import TokenAuth
 from apps.dashboard.selectors import DashboardSelector
 from apps.particular_task.selectors import TaskSelector
-from apps.particular_task.serializers import TaskSerializer
+from apps.particular_task.serializers import TaskShortDetailsSerializer
 
 # ---------------------------------------NOT USED YET-------------------------------------------------------------
 
 
 class TaskView(TokenAuth, APIView):
-    serializer_class = TaskSerializer
+    serializer_class = TaskShortDetailsSerializer
 
     # def get(self, request: Request, dashboard_id: UUID) -> Response:
     #     """Get all tasks for dashboard"""
@@ -35,7 +35,7 @@ class TaskView(TokenAuth, APIView):
 
 
 class SingleTaskView(TokenAuth, APIView):
-    serializer_class = TaskSerializer
+    serializer_class = TaskShortDetailsSerializer
 
     def get(self, request: Request, task_id: UUID) -> Response:
         """Get task by ID"""
