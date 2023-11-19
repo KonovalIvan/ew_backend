@@ -13,7 +13,7 @@ from apps.authentication.serializers import (
     LoginSerializer,
     RegisterUserSerializer,
     TokenSerializer,
-    UserShortDetailsSerializer,
+    UserDetailsSerializer,
 )
 from apps.authentication.services import AuthenticationServices
 
@@ -52,7 +52,7 @@ class VerifyTokenView(TokenAuth, APIView):
 
 
 class UserDetailsView(TokenAuth, APIView):
-    serializer_class = UserShortDetailsSerializer
+    serializer_class = UserDetailsSerializer
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """Get user info"""

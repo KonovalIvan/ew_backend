@@ -11,7 +11,7 @@ class Dashboard(BaseModel, TimestampMixin):
     """
 
     name = models.CharField(max_length=32, null=False, blank=False)
-    project = models.OneToOneField(
+    project = models.ForeignKey(
         Project,
         on_delete=models.SET_NULL,
         related_name="dashboard",

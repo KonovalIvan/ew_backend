@@ -4,14 +4,19 @@ from apps.authentication.models import Address, User
 
 
 class AddressSerializer(serializers.ModelSerializer):
+    address_line_2 = serializers.CharField(required=False, default="")
+    id = serializers.UUIDField(required=False, allow_null=True)
+
     class Meta:
         model = Address
-        fields = ("address_line_1", "address_line_2", "post_code", "city", "country")
-        extra_kwargs = {
-            "address_line_1": {"required": True},
-            "post_code": {"required": True},
-            "city": {"required": True},
-        }
+        fields = (
+            "id",
+            "address_line_1",
+            "address_line_2",
+            "post_code",
+            "city",
+            "country",
+        )
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
@@ -35,20 +40,27 @@ class UserShortDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            "username",
             "first_name",
             "last_name",
+        )
+
+
+class UserDetailsSerializer(UserShortDetailsSerializer):
+    class Meta:
+        model = User
+        fields = UserShortDetailsSerializer.Meta.fields + (
+            "username",
             "email",
         )
 
 
-class UserMainDetailsSerializer(UserShortDetailsSerializer):
+class UserMainDetailsSerializer(UserDetailsSerializer):
     active_projects = serializers.IntegerField(help_text="Count all active projects")
     progress = serializers.DecimalField(help_text="All project progress information", decimal_places=2, max_digits=1000)
 
     class Meta:
         model = User
-        fields = UserShortDetailsSerializer.Meta.fields + (
+        fields = UserDetailsSerializer.Meta.fields + (
             "active_projects",
             "progress",
         )

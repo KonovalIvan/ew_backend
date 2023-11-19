@@ -6,7 +6,7 @@ services:
     env_file:
       - secrets/.env.postgres
     ports:
-      - "5432"
+      - "5432:5432"
 
   web:
     build:
@@ -23,17 +23,3 @@ services:
       - "8000:8000"
     depends_on:
       - db
-
-# FIXME: add new container ngrok to connect localhost
-#  ngrok:
-#    image: wernight/ngrok
-#    restart: unless-stopped
-#    ports:
-#      - "4040:4040"
-#    volumes:
-#      - ./.ngrok.yml:/ngrok/.ngrok.yml
-#      - ./secrets/.env.ngrok:/ngrok/.env.ngrok
-#    command:
-#      - "/bin/sh"
-#      - "-c"
-#      - "ngrok start --config /ngrok/.ngrok.yml --all"
