@@ -68,9 +68,23 @@ class AddressServices:
         # TODO: Add validators for creating address
         address = Address.objects.create(
             address_line_1=address_data["address_line_1"],
-            address_line_2=getattr(address_data["address_line_2"], ""),
+            address_line_2=address_data["address_line_2"],
             post_code=address_data["post_code"],
             city=address_data["city"],
             country=address_data["country"],
+        )
+        return address
+
+    @staticmethod
+    def update_address(address_data: dict) -> Address:
+        address, _ = Address.objects.update_or_create(
+            id=address_data["id"],
+            defaults={
+                "address_line_1": address_data["address_line_1"],
+                "address_line_2": address_data["address_line_2"],
+                "post_code": address_data["post_code"],
+                "city": address_data["city"],
+                "country": address_data["country"],
+            },
         )
         return address

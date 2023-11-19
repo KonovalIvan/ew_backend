@@ -47,7 +47,7 @@ class NewProjectsSerializer(serializers.ModelSerializer):
     building_master_email = serializers.CharField(
         help_text="Building master email", max_length=20, required=False, allow_blank=True
     )
-    client_phone = serializers.CharField(help_text="Client email", max_length=20, required=False, allow_blank=True)
+    client_phone = serializers.CharField(help_text="Client phone", max_length=20, required=False, allow_blank=True)
     address = AddressSerializer(required=False, allow_null=True)
     description = serializers.CharField(allow_blank=True)
 

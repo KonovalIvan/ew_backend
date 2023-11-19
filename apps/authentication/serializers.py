@@ -4,11 +4,13 @@ from apps.authentication.models import Address, User
 
 
 class AddressSerializer(serializers.ModelSerializer):
-    address_line_2 = serializers.CharField(allow_blank=True)
+    address_line_2 = serializers.CharField(required=False, default="")
+    id = serializers.UUIDField(required=False, allow_null=True)
 
     class Meta:
         model = Address
         fields = (
+            "id",
             "address_line_1",
             "address_line_2",
             "post_code",

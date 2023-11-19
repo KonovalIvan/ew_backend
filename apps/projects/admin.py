@@ -5,6 +5,19 @@ from apps.projects.models import Project
 
 
 class ProjectAdmin(admin.ModelAdmin):
+    model = Project
+    list_display = (
+        "name",
+        "designer",
+        "updated_at",
+        "finished",
+    )
+    search_fields = (
+        "name",
+        "designer__first_name",
+        "designer__last_name",
+        "designer__email",
+    )
     readonly_fields = ("designer",)
     inlines = [
         ImageAssetInline,

@@ -3,6 +3,7 @@ from uuid import UUID
 
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
+from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -63,35 +64,36 @@ class AddProjectView(TokenAuth, APIView):
         return Response(self.response_serializer(response).data, status=status.HTTP_201_CREATED)
 
 
-class SingleProjectView(TokenAuth, APIView):
+class SingleProjectView(TokenAuth, GenericAPIView):
     serializer_class = ProjectsSerializer
+    update_serializer = NewProjectsSerializer
 
     def get(self, request: Request, project_id: UUID) -> Response:
         """Get expanded project information by ID"""
         project = ProjectSelector.get_by_id(id=project_id)
         serializer = self.serializer_class(project, many=False)
+
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request: Request, project_id: UUID) -> Response:
         """Delete project by ID"""
         success = ProjectsServices.delete_single_project_by_id(project_id=project_id)
+
         return (
             Response(status=status.HTTP_204_NO_CONTENT)
             if success
             else Response({"error_msg": "Failed to find photo."}, status=status.HTTP_404_NOT_FOUND)
         )
 
-    # ---------------------------------------NOT USED YET-------------------------------------------------------------
-
     def put(self, request: Request, project_id: UUID) -> Response:
         """Edit project by ID"""
-        projects = ProjectSelector.get_by_id(id=project_id)
-        serializer = self.serializer_class(projects, many=True)
-        serializer.is_valid()
+        serializer = self.update_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        # TODO: create edit logic in services
+        response = ProjectsServices.update_project(data=serializer.validated_data, project_id=project_id)
+        return Response(self.get_serializer(response).data, status=status.HTTP_200_OK)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    # ---------------------------------------NOT USED YET-------------------------------------------------------------
 
 
 class ActiveProjectView(TokenAuth, APIView):

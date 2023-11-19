@@ -27,7 +27,7 @@ class ProjectsServices:
     @staticmethod
     def create_project(data: dict) -> Project:
         address = None
-        if "address" in data and not data["address"]:
+        if "address" in data:
             address = AddressServices.create_address(address_data=data["address"])
         designer = User.objects.filter(username=data["designer_email"]).first()
         master = User.objects.filter(username=data["building_master_email"]).first()
@@ -40,3 +40,19 @@ class ProjectsServices:
             building_master=master,
             finished=False,
         )
+
+    @staticmethod
+    def update_project(data: dict, project_id: uuid.UUID) -> Project:
+        project = ProjectSelector.get_by_id(id=project_id)
+        if "address" in data:
+            address = AddressServices.update_address(address_data=data["address"])
+            project.address = address
+
+        project.designer = User.objects.filter(username=data["designer_email"]).first()
+        project.building_master = User.objects.filter(username=data["building_master_email"]).first()
+        project.name = data["name"]
+        project.description = data["description"]
+        project.client = data["client_phone"]
+        project.save()
+
+        return project

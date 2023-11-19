@@ -2,10 +2,10 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 
 from apps.authentication.consts import DEFAULT_USER_LANGUAGE, Language, UserType
-from apps.base_models import BaseModel
+from apps.base_models import BaseModel, TimestampMixin
 
 
-class Address(BaseModel):
+class Address(BaseModel, TimestampMixin):
     """
     That model serve for addresses
     """
@@ -42,7 +42,7 @@ class Address(BaseModel):
         return ", ".join([str(parts) for parts in parts_to_display if str(parts) != ""])
 
 
-class User(AbstractUser, BaseModel):
+class User(AbstractUser, BaseModel, TimestampMixin):
     """
     This model created for the user
     """
@@ -55,7 +55,7 @@ class User(AbstractUser, BaseModel):
         blank=False,
         null=False,
     )
-    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True)
     language = models.CharField(
         max_length=2,
         default=Language(DEFAULT_USER_LANGUAGE).value,

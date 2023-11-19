@@ -12,6 +12,8 @@ class Project(BaseModel, TimestampMixin):
     description = models.TextField(null=True, blank=True)
     main_image = models.ImageField(
         upload_to=generate_random_filename_for_project,
+        null=True,
+        blank=True,
     )
     client = models.CharField(max_length=20, null=True, blank=True)
     designer = models.ForeignKey(
@@ -41,3 +43,8 @@ class Project(BaseModel, TimestampMixin):
 
     def short_description(self) -> str:
         return self.description[:128] if self.description else "No description"
+
+    def delete(self, *args, **kwargs):
+        if self.address:
+            self.address.delete()
+        super().delete(*args, **kwargs)
