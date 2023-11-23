@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from rest_framework import status
+from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -28,14 +29,33 @@ class AddDashboardsView(TokenAuth, APIView):
         return Response(self.response_serializer(response).data, status=status.HTTP_201_CREATED)
 
 
-class SingleDashboardsView(TokenAuth, APIView):
+class SingleDashboardsView(TokenAuth, GenericAPIView):
     serializer_class = DashboardWithTasksSerializer
+    update_serializer = DashboardSerializer
 
     def get(self, request: Request, dashboard_id: UUID) -> Response:
         """Get dashboard and related tasks"""
         dashboard = DashboardSelector.get_by_id(id=dashboard_id)
 
         return Response(self.serializer_class(dashboard).data, status=status.HTTP_200_OK)
+
+    def put(self, request: Request, dashboard_id: UUID) -> Response:
+        """Edit project by ID"""
+        serializer = self.update_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        response = DashboardServices.update_dashboard(data=serializer.validated_data, dashboard_id=dashboard_id)
+        return Response(self.get_serializer(response).data, status=status.HTTP_200_OK)
+
+    def delete(self, request: Request, dashboard_id: UUID) -> Response:
+        """Delete dashboard by ID"""
+        success = DashboardServices.delete_single_dashboard_by_id(dashboard_id=dashboard_id)
+
+        return (
+            Response(status=status.HTTP_204_NO_CONTENT)
+            if success
+            else Response({"error_msg": "Failed to find a dashboard."}, status=status.HTTP_404_NOT_FOUND)
+        )
 
 
 # ---------------------------------------NOT USED YET-------------------------------------------------------------

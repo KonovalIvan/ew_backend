@@ -82,7 +82,7 @@ class SingleProjectView(TokenAuth, GenericAPIView):
         return (
             Response(status=status.HTTP_204_NO_CONTENT)
             if success
-            else Response({"error_msg": "Failed to find photo."}, status=status.HTTP_404_NOT_FOUND)
+            else Response({"error_msg": "Failed to find a project."}, status=status.HTTP_404_NOT_FOUND)
         )
 
     def put(self, request: Request, project_id: UUID) -> Response:

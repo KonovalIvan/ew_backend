@@ -13,7 +13,7 @@ class Dashboard(BaseModel, TimestampMixin):
     name = models.CharField(max_length=32, null=False, blank=False)
     project = models.ForeignKey(
         Project,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name="dashboard",
         null=True,
         blank=True,
