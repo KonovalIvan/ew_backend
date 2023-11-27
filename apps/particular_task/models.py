@@ -22,7 +22,11 @@ class Task(BaseModel, TimestampMixin):
     )
     finished = models.BooleanField(default=False)
     client_accepting = models.BooleanField(default=False)
-    photo = models.ImageField(upload_to=image_directory_path(dashboard=dashboard))  # type: ignore
+    photo = models.ImageField(
+        upload_to=image_directory_path(dashboard=dashboard),
+        null=True,
+        blank=True,
+    )  # type: ignore
 
     # TODO: create deleted_user logic and replace set_null to deleted user
     assign = models.ForeignKey(

@@ -13,12 +13,15 @@ class Dashboard(BaseModel, TimestampMixin):
     name = models.CharField(max_length=32, null=False, blank=False)
     project = models.ForeignKey(
         Project,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name="dashboard",
         null=True,
         blank=True,
     )
-    description = models.TextField()
+    description = models.TextField(
+        null=True,
+        blank=True,
+    )
 
     def __str__(self) -> str:
         return f"{self.name}"

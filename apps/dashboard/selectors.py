@@ -12,5 +12,9 @@ class DashboardSelector:
         return Dashboard.objects.get(id=id)
 
     @staticmethod
+    def get_all_by_id(id: UUID) -> QuerySet[Dashboard]:
+        return Dashboard.objects.filter(id=id)
+
+    @staticmethod
     def get_all_by_project(project: Project) -> QuerySet[Dashboard]:
         return Dashboard.objects.filter(project=project)

@@ -56,7 +56,7 @@ class AddProjectView(TokenAuth, APIView):
         },
     )
     def post(self, request: Request):
-        """Create new parking"""
+        """Create new project"""
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -82,7 +82,7 @@ class SingleProjectView(TokenAuth, GenericAPIView):
         return (
             Response(status=status.HTTP_204_NO_CONTENT)
             if success
-            else Response({"error_msg": "Failed to find photo."}, status=status.HTTP_404_NOT_FOUND)
+            else Response({"error_msg": "Failed to find a project."}, status=status.HTTP_404_NOT_FOUND)
         )
 
     def put(self, request: Request, project_id: UUID) -> Response:
@@ -92,34 +92,3 @@ class SingleProjectView(TokenAuth, GenericAPIView):
 
         response = ProjectsServices.update_project(data=serializer.validated_data, project_id=project_id)
         return Response(self.get_serializer(response).data, status=status.HTTP_200_OK)
-
-    # ---------------------------------------NOT USED YET-------------------------------------------------------------
-
-
-class ActiveProjectView(TokenAuth, APIView):
-    serializer_class = ProjectsSerializer
-
-    def get(self, request: Request) -> Response:
-        """Get all active projects"""
-        projects = ProjectSelector.get_active_by_user(user=request.user)
-
-        return Response(self.serializer_class(projects, many=True).data, status=status.HTTP_200_OK)
-
-    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        """Create new project"""
-        serializer = self.serializer_class(request.data, many=False)
-
-        # TODO: create logic for creating new project
-
-        return Response(self.serializer_class(serializer).data, status=status.HTTP_200_OK)
-
-
-class FinishedProjectView(TokenAuth, APIView):
-    serializer_class = ProjectsSerializer
-
-    def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        """Get all archived projects"""
-        projects = ProjectSelector.get_archived_by_user(user=request.user)
-        serializer = self.serializer_class(projects, many=True)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
