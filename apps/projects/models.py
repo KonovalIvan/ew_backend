@@ -43,8 +43,3 @@ class Project(BaseModel, TimestampMixin):
 
     def short_description(self) -> str:
         return self.description[:128] if self.description else "No description"
-
-    def delete(self, *args, **kwargs):
-        if self.address:
-            self.address.delete()
-        super().delete(*args, **kwargs)

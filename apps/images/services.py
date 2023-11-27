@@ -13,3 +13,7 @@ class ImageAssetServices:
             return True
         except ImageAsset.DoesNotExist:
             return False
+
+    @staticmethod
+    def create_image(data: dict) -> ImageAsset:
+        return ImageAsset.objects.create(**data)

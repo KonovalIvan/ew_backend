@@ -8,4 +8,15 @@ class ImageAssetInline(admin.TabularInline):
     extra = 0
 
 
-admin.site.register(ImageAsset)
+class ImageAssetAdmin(admin.ModelAdmin):
+    model = ImageAsset
+    list_display = (
+        "image_name",
+        "project",
+        "image_size",
+    )
+    readonly_fields = ("image_size",)
+    search_fields = ("project__name",)
+
+
+admin.site.register(ImageAsset, ImageAssetAdmin)
