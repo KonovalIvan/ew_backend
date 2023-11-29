@@ -10,7 +10,7 @@ class Dashboard(BaseModel, TimestampMixin):
     Created to see project progress
     """
 
-    name = models.CharField(max_length=32, null=False, blank=False)
+    name = models.CharField(max_length=64, null=False, blank=False)
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
