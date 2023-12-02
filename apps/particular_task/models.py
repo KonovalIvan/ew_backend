@@ -3,7 +3,6 @@ from django.db import models
 from apps.authentication.models import User
 from apps.base_models import BaseModel, TimestampMixin
 from apps.dashboard.models import Dashboard
-from apps.particular_task.consts import image_directory_path
 
 
 class Task(BaseModel, TimestampMixin):
@@ -15,18 +14,13 @@ class Task(BaseModel, TimestampMixin):
     description = models.TextField()
     dashboard = models.ForeignKey(
         Dashboard,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name="task",
         blank=True,
         null=True,
     )
     finished = models.BooleanField(default=False)
     client_accepting = models.BooleanField(default=False)
-    photo = models.ImageField(
-        upload_to=image_directory_path(dashboard=dashboard),
-        null=True,
-        blank=True,
-    )  # type: ignore
 
     # TODO: create deleted_user logic and replace set_null to deleted user
     assign = models.ForeignKey(
