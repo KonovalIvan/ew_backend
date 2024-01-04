@@ -2,9 +2,11 @@ import uuid
 
 
 def generate_random_filename_for_project(instance, filename: str):
-    project_id = instance.id if not hasattr(instance, "project") else instance.project.id
-    task_id = None if not hasattr(instance, "task") else f"/tasks/{instance.task.id}"
-    return f"projects/{project_id}{task_id}/{uuid.uuid4().hex[:10]}-{filename}"
+    # path_name = f'projects/{instance.project.id}' if hasattr(instance, "project") else f"tasks/{instance.task.id}"
+    path_name = (
+        f"projects/{instance.project.id}" if instance.project else f"tasks/{instance.task.id}" if instance.task else ""
+    )
+    return f"{path_name}/{uuid.uuid4().hex[:10]}-{filename}"
 
 
 def generate_random_filename_for_user_avatar(instance, filename: str):

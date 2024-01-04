@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from apps.authentication.serializers import AddressSerializer, UserDetailsSerializer
 from apps.dashboard.serializers import DashboardSerializer
-from apps.images.serializers import ImageAssetShortSerializer
+from apps.images.serializers import ImageSerializer
 from apps.projects.models import Project
 
 
@@ -24,7 +24,7 @@ class ProjectsSerializer(serializers.ModelSerializer):
     client = serializers.CharField(help_text="Here we add phone number of client", max_length=20)
     address = AddressSerializer()
     dashboard = DashboardSerializer(many=True)
-    image_gallery = ImageAssetShortSerializer(many=True)
+    image_gallery = ImageSerializer(many=True)
 
     class Meta:
         model = Project
