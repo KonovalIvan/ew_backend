@@ -10,8 +10,8 @@ class Task(BaseModel, TimestampMixin):
     Model created as card for dashboard
     """
 
-    name = models.CharField(max_length=32, null=False, blank=False)
-    description = models.TextField()
+    name = models.CharField(max_length=64, null=False, blank=False)
+    description = models.TextField(null=True, blank=True)
     dashboard = models.ForeignKey(
         Dashboard,
         on_delete=models.CASCADE,

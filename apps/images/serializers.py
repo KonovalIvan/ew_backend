@@ -10,6 +10,13 @@ class ImageAssetShortSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "image",
+        )
+
+
+class ImageSerializer(ImageAssetShortSerializer):
+    class Meta:
+        model = ImageAsset
+        fields = ImageAssetShortSerializer.Meta.fields + (
             "image_name",
             "image_size",
         )

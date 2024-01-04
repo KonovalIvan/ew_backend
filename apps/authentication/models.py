@@ -3,6 +3,7 @@ from django.db import models
 
 from apps.authentication.consts import DEFAULT_USER_LANGUAGE, Language, UserType
 from apps.base_models import BaseModel, TimestampMixin
+from apps.base_services import generate_random_filename_for_user_avatar
 
 
 class Address(BaseModel, TimestampMixin):
@@ -47,6 +48,11 @@ class User(AbstractUser, BaseModel, TimestampMixin):
     This model created for the user
     """
 
+    avatar = models.ImageField(
+        upload_to=generate_random_filename_for_user_avatar,
+        null=True,
+        blank=True,
+    )
     company_name = models.CharField(max_length=128)
     user_type = models.CharField(
         max_length=128,

@@ -21,6 +21,7 @@ class ImageAsset(BaseModel, TimestampMixin):
         upload_to=generate_random_filename_for_project,
         null=True,
         blank=True,
+        max_length=256,
     )
 
     def get_image_size(self):

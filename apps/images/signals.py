@@ -8,7 +8,7 @@ from apps.images.models import ImageAsset
 
 
 @receiver(post_save, sender=ImageAsset)
-def user_unmark_contractor_on_edit(sender: ImageAsset, instance: ImageAsset, *args: Any, **kwargs: Any) -> None:
+def add_user_to_comment(sender: ImageAsset, instance: ImageAsset, *args: Any, **kwargs: Any) -> None:
     byte_size = instance.get_image_size()
     new_image_size = (
         f"{byte_size * bytes_mb:.2f} MB" if int(byte_size * bytes_mb) != 0 else f"{byte_size * bytes_kb:.2f} KB"

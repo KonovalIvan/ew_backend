@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.api.base_auth import TokenAuth
-from apps.images.serializers import ImageAssetShortSerializer, NewImageSerializer
+from apps.images.serializers import ImageSerializer, NewImageSerializer
 from apps.images.services import ImageAssetServices
 
 
@@ -25,7 +25,7 @@ class ImageAssetView(TokenAuth, APIView):
 
 class NewImageView(TokenAuth, APIView):
     serializer_class = NewImageSerializer
-    response_serializer = ImageAssetShortSerializer
+    response_serializer = ImageSerializer
 
     @extend_schema(
         responses={status.HTTP_200_OK: NewImageSerializer},
