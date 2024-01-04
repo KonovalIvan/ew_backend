@@ -14,6 +14,10 @@ class TaskSelector:
         return Task.objects.get(id=id)
 
     @staticmethod
+    def filter_by_id(id: UUID) -> QuerySet[Task]:
+        return Task.objects.filter(id=id)
+
+    @staticmethod
     def get_all_by_dashboard(dashboard: Dashboard) -> QuerySet[Task]:
         return Task.objects.filter(dashboard=dashboard)
 

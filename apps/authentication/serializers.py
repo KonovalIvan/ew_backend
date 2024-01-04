@@ -36,10 +36,16 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         return data
 
 
-class UserShortDetailsSerializer(serializers.ModelSerializer):
+class UserAvatarSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = (
+        fields = ("avatar",)
+
+
+class UserShortDetailsSerializer(UserAvatarSerializer):
+    class Meta:
+        model = User
+        fields = UserAvatarSerializer.Meta.fields + (
             "first_name",
             "last_name",
         )
