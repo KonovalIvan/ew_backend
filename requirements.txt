@@ -68,6 +68,3 @@ urllib3==1.26.16
 virtualenv==20.24.3
 webencodings==0.5.1
 zipp==3.16.2
-
-celery~=5.3.6
-redis~=5.0.1

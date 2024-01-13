@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 
 from apps.authentication.consts import DEFAULT_USER_LANGUAGE, Language, UserType
@@ -53,6 +53,7 @@ class User(AbstractUser, BaseModel, TimestampMixin):
         null=True,
         blank=True,
     )
+    company_name = models.CharField(max_length=128)
     user_type = models.CharField(
         max_length=128,
         default=UserType.CLIENT,
@@ -60,7 +61,7 @@ class User(AbstractUser, BaseModel, TimestampMixin):
         blank=False,
         null=False,
     )
-    address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True)
     language = models.CharField(
         max_length=2,
         default=Language(DEFAULT_USER_LANGUAGE).value,
@@ -68,26 +69,22 @@ class User(AbstractUser, BaseModel, TimestampMixin):
         blank=False,
         null=False,
     )
-    is_registered = models.BooleanField(
-        default=False, help_text="if true means that the user has completed the registration process"
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name="groups",
+        blank=True,
+        help_text="The groups this user belongs to.",
+        related_name="custom_user_set",
+        related_query_name="user",
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        verbose_name="user permissions",
+        blank=True,
+        help_text="Specific permissions for this user.",
+        related_name="custom_user_set",
+        related_query_name="user",
     )
 
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name} / {self.email}"
-
-
-class RegistrationToken(BaseModel, TimestampMixin):
-    """
-    This model created for the user
-    """
-
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        blank=False,
-        null=False,
-    )
-    is_verify = models.BooleanField(default=False, help_text="if true - user open verify link, and finish registrarion")
-
-    def __str__(self) -> str:
-        return f"{self.user.first_name} {self.user.last_name} / {self.is_verify}"

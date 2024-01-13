@@ -1,0 +1,20 @@
+# FIXME: add new container ngrok to connect localhost
+authtoken: 2NVwMQZ66LjEuq68o6Q8mkXB8kh_hg3PquV8LkpHHuYKSJhx
+connect_timeout: 30s
+
+console_ui: true
+console_ui_color: transparent
+
+log_level: info
+log_format: json
+
+region: eu
+root_cas: trusted
+
+version: 2
+web_addr: localhost:4040
+
+tunnels:
+  web:
+    addr: 127.0.0.1:8000
+    proto: http

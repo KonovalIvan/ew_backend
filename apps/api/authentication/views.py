@@ -1,6 +1,5 @@
 from typing import Any
 
-from django.shortcuts import render
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -11,7 +10,6 @@ from rest_framework.views import APIView
 from apps.api.base_auth import NoAuth, TokenAuth
 from apps.authentication.selectors import UserSelector
 from apps.authentication.serializers import (
-    ConfirmEmailSerializer,
     LoginSerializer,
     TokenSerializer,
     UserDetailsSerializer,
@@ -60,17 +58,3 @@ class UserDetailsView(TokenAuth, APIView):
         serializer = self.serializer_class(user, many=False)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class ConfirmEmailView(NoAuth, APIView):
-    serializer_class = ConfirmEmailSerializer
-
-    def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        # token_id = request.GET.get("token_id", None)
-        # user_id = request.GET.get("user_id", None)
-        data = {"is_email_confirmed": False, "additional_information": "lalalallalalala"}
-
-        return render(request, template_name="confirm_email_view.html", context=data)

@@ -1,13 +1,8 @@
 version: '3.9'
 
 services:
-  redis:
-    image: "redis:latest"
-    container_name: redis
-
   db:
     image: "postgis/postgis:12-3.2"
-    container_name: db
     env_file:
       - secrets/.env.postgres
     ports:
@@ -19,7 +14,6 @@ services:
       dockerfile: Dockerfile
     env_file:
       - secrets/.env.dev
-      - secrets/.env.celery
     command: python manage.py runserver 0.0.0.0:8000
     container_name: web
     user: root
@@ -29,19 +23,3 @@ services:
       - "8000:8000"
     depends_on:
       - db
-      - redis
-
-  celery:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    container_name: celery
-    env_file:
-      - secrets/.env.dev
-      - secrets/.env.celery
-    command: celery -A config worker -l info
-    volumes:
-      - .:/app/
-    depends_on:
-      - db
-      - web
