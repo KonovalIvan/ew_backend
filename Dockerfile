@@ -8,7 +8,6 @@ ENV PIP_NO_CACHE_DIR 1
 ENV PIP_DISABLE_PIP_VERSION_CHECK 1
 ENV POETRY_VERSION=1.5.1
 
-WORKDIR /app/
 RUN apt-get update \
   && apt-get install --no-install-recommends -y \
     bash \
@@ -21,15 +20,15 @@ RUN apt-get update \
   && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 
-# FIXME: fix downloading lib from poetry not from pip
-#RUN pip install "poetry==$POETRY_VERSION"
+WORKDIR /app/
 
-#COPY ./poetry.lock ./pyproject.toml ./
-#RUN poetry config virtualenvs.create false
-#RUN poetry install
+RUN pip install -q poetry
 
-COPY ./requirements.txt ./
-RUN pip install -r requirements.txt
+RUN poetry config virtualenvs.create false
+COPY poetry.lock pyproject.toml /app/
+
+RUN poetry config installer.max-workers 10
+RUN poetry install -n
 
 COPY . .
 
