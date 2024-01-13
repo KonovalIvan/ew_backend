@@ -1,63 +1,48 @@
-from typing import Optional, Tuple
-
-from rest_framework import exceptions
-from rest_framework.authentication import TokenAuthentication, get_authorization_header
-from rest_framework.authtoken.models import Token
-from rest_framework.request import Request
+from django.db import transaction
 
 from apps.authentication.exceptions import UserExistException
-from apps.authentication.models import Address, User
+from apps.authentication.models import Address, RegistrationToken, User
 from apps.authentication.selectors import UserSelector
-
-
-class BearerAuthentication(TokenAuthentication):
-    keyword = "Bearer"
-
-    def authenticate_credentials(self, key: str) -> tuple[User, Token]:
-        try:
-            token = Token.objects.get(key=key)
-        except Token.DoesNotExist:
-            raise exceptions.AuthenticationFailed("Invalid token")
-
-        if not token.user.is_active:
-            raise exceptions.AuthenticationFailed("User inactive or deleted")
-
-        return token.user, token
-
-    def authenticate(self, request: Request) -> Optional[Tuple[User, Token]]:
-        auth = get_authorization_header(request).split()
-        if not auth or auth[0].lower() != self.keyword.lower().encode():
-            return None
-
-        if len(auth) == 1 or len(auth) > 2:
-            raise exceptions.AuthenticationFailed("Invalid token header.")
-
-        try:
-            token = auth[1].decode()
-        except UnicodeError:
-            raise exceptions.AuthenticationFailed(
-                "Invalid token header. Token string should not contain invalid characters."
-            )
-
-        return self.authenticate_credentials(token)
-
-    def authenticate_header(self, request: Request) -> str:
-        return self.keyword
+from apps.celery.utils import celery_apply_async
+from apps.email.consts import EmailType
+from apps.email.tasks import send_email_async
+from config import settings
 
 
 class AuthenticationServices:
     @staticmethod
     def create_user(user_data: dict) -> User:
-        email = user_data["email"]
+        # function assert serialized data, but add one more secure
+        email = user_data.pop("email")
+        language = user_data.pop("language")
+        password = user_data.pop("password")
+
         if UserSelector.get_by_username_or_none(email):
             raise UserExistException
 
-        user = User.objects.create(
-            username=email,
-            email=email,
+        token = None
+
+        with transaction.atomic():
+            user = User.objects.create(username=email, defaults={"email": email, "language": language})
+            user.set_password(password)
+            user.save()
+            token = RegistrationToken.objects.create(user=user)
+        celery_apply_async(
+            send_email_async,
+            args=[
+                EmailType.USER_REGISTER_EMAIL.value,
+                [user.email],
+                {
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "email": user.email,
+                    "domain": settings.DOMAIN,
+                    "token_id": token.id,
+                    "user_id": user.id,
+                },
+            ],
+            countdown=30,
         )
-        user.set_password(user_data["password"])
-        user.save()
 
         return user
 

@@ -21,6 +21,8 @@ assertpy = "^1.1"
 environ = "^1.0"
 drf-spectacular-sidecar = "^2023.8.1"
 pre-commit = "^3.3.3"
+celery = "^5.3.6"
+redis = "^5.0.1"
 
 
 [build-system]
