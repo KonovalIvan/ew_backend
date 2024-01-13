@@ -21,6 +21,7 @@ SECRETS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 # load the environment variables from the .env file
 load_dotenv(os.path.join(SECRETS_DIR, ".env.dev"))
+load_dotenv(os.path.join(SECRETS_DIR, ".env.celery"))
 load_dotenv(os.path.join(SECRETS_DIR, ".env.postgres"))
 
 # Quick-start development settings - unsuitable for production
@@ -53,6 +54,8 @@ for app_name in os.listdir("./apps"):
         app_module = f"apps.{app_name}"
         INSTALLED_APPS.append(app_module)
 
+DOMAIN = os.getenv("DOMAIN")
+
 # Middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -74,10 +77,15 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS")
 
+
+TEMPLATE_DIRS = [
+    os.path.join(BASE_DIR, "templates"),
+]
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": TEMPLATE_DIRS,
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -184,3 +192,7 @@ MEDIA_URL = os.getenv("MEDIA_URL")
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# CELERY
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")

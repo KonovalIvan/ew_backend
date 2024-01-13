@@ -1,11 +1,19 @@
-from django.urls import path
+from django.urls import include, path
 
-from apps.api.authentication.views import LoginView, UserDetailsView, VerifyTokenView
+from apps.api.authentication.views import (
+    ConfirmEmailView,
+    LoginView,
+    UserDetailsView,
+    VerifyTokenView,
+)
+
+register_urlpatterns = [
+    path("confirm-email", ConfirmEmailView.as_view(), name="confirm-email"),
+]
 
 urlpatterns = [
     path("user-details/", UserDetailsView.as_view(), name="authentication-user-details"),
     path("login/", LoginView.as_view(), name="authentication-login"),
     path("verify-token/", VerifyTokenView.as_view(), name="verify-token"),
-    # ---------------------------------------NOT USED YET-------------------------------------------------------------
-    # path("register-user/", RegisterUserView.as_view(), name="authentication-register-user"),
+    path("register/", include(register_urlpatterns)),
 ]

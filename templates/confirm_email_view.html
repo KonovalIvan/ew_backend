@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmate email</title>
+</head>
+<body>
+
+    {% if is_email_confirmed == True %}
+        <div class="notification is-success">
+            <p>Your email is confirmed</p>
+        </div>
+    {% else %}
+        <div class="notification is-success">
+            <p>Your verify token is expired. Please request new one</p>
+        </div>
+    {% endif %}
+
+    {% if additional_information != None %}
+        <div class="notification is-success">
+            <p>{{ additional_information }}</p>
+        </div>
+    {% endif %}
+
+</body>
+</html>
