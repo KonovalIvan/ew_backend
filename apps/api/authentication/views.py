@@ -1,5 +1,7 @@
 from typing import Any
 
+from django.core.handlers.wsgi import WSGIRequest
+from django.http import HttpResponse
 from django.shortcuts import render
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
@@ -9,13 +11,16 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.api.base_auth import NoAuth, TokenAuth
+from apps.authentication.consts import DEFAULT_USER_LANGUAGE
+from apps.authentication.models import User
 from apps.authentication.selectors import UserSelector
 from apps.authentication.serializers import (
-    ConfirmEmailSerializer,
     LoginSerializer,
     TokenSerializer,
     UserDetailsSerializer,
 )
+from apps.authentication.services import AuthenticationServices
+from apps.base_consts import TEMPLATE_WEB_DATA, WebType
 
 
 class LoginView(NoAuth, APIView):
@@ -27,17 +32,18 @@ class LoginView(NoAuth, APIView):
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = self.serializer_class(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
+
         if not (
-            user := UserSelector.get_by_username_or_none(
-                username=serializer.validated_data["username"],
-            )
-        ) or not user.check_password(serializer.validated_data["password"]):
+                user := UserSelector.get_by_username_or_none(
+                    username=serializer.validated_data["username"],
+                )
+        ) or not user.check_password(serializer.validated_data["password"]) or not user.is_registered:
             return Response({"error_msg": "Invalid username or password."}, status=status.HTTP_400_BAD_REQUEST)
         token, created = Token.objects.get_or_create(user=user)
+
         return Response(
             {
                 "access_token": token.key,
-                "refresh_token": user.auth_token.key,
             }
         )
 
@@ -62,15 +68,12 @@ class UserDetailsView(TokenAuth, APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class ConfirmEmailView(NoAuth, APIView):
-    serializer_class = ConfirmEmailSerializer
+def confirm_email(request: WSGIRequest) -> HttpResponse:
+    template = TEMPLATE_WEB_DATA[WebType.REGISTER_VIEW.value]
+    token_id = request.GET.get("token_id", None)
+    user_id = request.GET.get("user_id", None)
+    language = request.GET.get("language", DEFAULT_USER_LANGUAGE)
 
-    def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
+    data = AuthenticationServices.confirm_email(token_id=token_id, user_id=user_id)
 
-        # token_id = request.GET.get("token_id", None)
-        # user_id = request.GET.get("user_id", None)
-        data = {"is_email_confirmed": False, "additional_information": "lalalallalalala"}
-
-        return render(request, template_name="confirm_email_view.html", context=data)
+    return render(request, template_name=f"web/{language}/{template}", context=data)

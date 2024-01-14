@@ -21,7 +21,11 @@ pre-commit = "^3.3.3"
 celery = "^5.3.6"
 redis = "^5.0.1"
 psycopg2-binary = "^2.9.9"
+pyyaml = "^6.0.1"
 
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.6.0"
 
 [build-system]
 requires = ["poetry-core"]

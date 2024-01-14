@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Confirmate email</title>
+    <title>Email confirmation</title>
 </head>
 <body>
 
@@ -17,9 +17,9 @@
         </div>
     {% endif %}
 
-    {% if additional_information != None %}
+    {% if reason != None %}
         <div class="notification is-success">
-            <p>{{ additional_information }}</p>
+            <p>{{ reason }}</p>
         </div>
     {% endif %}
 

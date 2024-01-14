@@ -88,11 +88,3 @@ class TokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["token", "refresh_token"]
-
-
-class ConfirmEmailSerializer(serializers.Serializer):
-    token_id = serializers.UUIDField(required=True)
-    user_id = serializers.UUIDField(required=True)
-
-    class Meta:
-        fields = ["token_id", "user_id"]

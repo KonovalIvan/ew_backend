@@ -1,14 +1,14 @@
 from django.urls import include, path
 
 from apps.api.authentication.views import (
-    ConfirmEmailView,
     LoginView,
     UserDetailsView,
     VerifyTokenView,
+    confirm_email,
 )
 
 register_urlpatterns = [
-    path("confirm-email", ConfirmEmailView.as_view(), name="confirm-email"),
+    path("confirm-email", confirm_email, name="confirm-email"),
 ]
 
 urlpatterns = [

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Potwierdzenie e-maila</title>
+</head>
+<body>
+
+    {% if is_email_confirmed == True %}
+        <div class="notification is-success">
+            <p>Adres email został potwierdzony</p>
+        </div>
+    {% else %}
+        <div class="notification is-success">
+            <p>Weryfikacyjny token wygasł, sprubuj ponownie</p>
+        </div>
+    {% endif %}
+
+    {% if reason != None %}
+        <div class="notification is-success">
+            <p>{{ reason }}</p>
+        </div>
+    {% endif %}
+
+</body>
+</html>

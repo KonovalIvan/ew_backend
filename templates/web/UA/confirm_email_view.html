@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Підтвердження електронної пошти</title>
+</head>
+<body>
+
+    {% if is_email_confirmed == True %}
+        <div class="notification is-success">
+            <p>Ваша електронна пошта підтверджена</p>
+        </div>
+    {% else %}
+        <div class="notification is-success">
+            <p>Термін дії вашого токена перевірки закінчився. Будь ласка, зверніться за новим</p>
+        </div>
+    {% endif %}
+
+    {% if reason != None %}
+        <div class="notification is-success">
+            <p>{{ reason }}</p>
+        </div>
+    {% endif %}
+
+</body>
+</html>

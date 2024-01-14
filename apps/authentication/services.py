@@ -1,8 +1,11 @@
+from typing import Dict, Any
+from uuid import UUID
+
 from django.db import transaction
 
-from apps.authentication.exceptions import UserExistException
+from apps.authentication.exceptions import UserExistException, UserNotFoundException, TokenNotFoundException
 from apps.authentication.models import Address, RegistrationToken, User
-from apps.authentication.selectors import UserSelector
+from apps.authentication.selectors import UserSelector, RegistrationTokenSelector
 from apps.celery.utils import celery_apply_async
 from apps.email.consts import EmailType
 from apps.email.tasks import send_email_async
@@ -20,10 +23,8 @@ class AuthenticationServices:
         if UserSelector.get_by_username_or_none(email):
             raise UserExistException
 
-        token = None
-
         with transaction.atomic():
-            user = User.objects.create(username=email, defaults={"email": email, "language": language})
+            user = User.objects.create(username=email, defaults={"email": email, "language": language}, is_active=False)
             user.set_password(password)
             user.save()
             token = RegistrationToken.objects.create(user=user)
@@ -33,18 +34,42 @@ class AuthenticationServices:
                 EmailType.USER_REGISTER_EMAIL.value,
                 [user.email],
                 {
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
                     "email": user.email,
                     "domain": settings.DOMAIN,
                     "token_id": token.id,
                     "user_id": user.id,
+                    "language": user.language,
                 },
             ],
             countdown=30,
         )
 
         return user
+
+    @staticmethod
+    def confirm_email(token_id: UUID, user_id: UUID) -> dict[str, Any]:
+        try:
+            user = UserSelector.get_by_id(id=user_id)
+            if (token := RegistrationTokenSelector.get_by_id_and_user(id=token_id, user=user)) and not token.is_verify:
+                token.is_verify, user.is_registered, user.is_active = True, True, True
+                token.save()
+                user.save()
+
+                return {
+                    "is_email_confirmed": True,
+                }
+            else:
+                return {
+                    "is_email_confirmed": False,
+                    "reason": "Token is already verified",
+                }
+        except User.DoesNotExist:
+            ex = UserNotFoundException
+            return {"is_email_confirmed": False, "reason": ex.error_msg, }
+
+        except RegistrationToken.DoesNotExist:
+            ex = TokenNotFoundException
+            return {"is_email_confirmed": False, "reason": ex.error_msg, }
 
 
 class AddressServices:

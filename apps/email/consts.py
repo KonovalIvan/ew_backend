@@ -14,6 +14,7 @@ EMAIL_DATA = {
         "subject": {
             "PL": "Rejestracja użytkownika",
             "EN": "User registration",
+            "UA": "Реєстрація користувача",
         },
     },
 }
