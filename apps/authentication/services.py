@@ -1,14 +1,18 @@
-from typing import Dict, Any
+from typing import Any
 from uuid import UUID
 
 from django.db import transaction
 
-from apps.authentication.exceptions import UserExistException, UserNotFoundException, TokenNotFoundException
+from apps.authentication.exceptions import (
+    TokenNotFoundException,
+    UserExistException,
+    UserNotFoundException,
+)
 from apps.authentication.models import Address, RegistrationToken, User
-from apps.authentication.selectors import UserSelector, RegistrationTokenSelector
+from apps.authentication.selectors import RegistrationTokenSelector, UserSelector
 from apps.celery.utils import celery_apply_async
 from apps.email.consts import EmailType
-from apps.email.tasks import send_email_async
+from apps.email.tasks import task_send_email_async
 from config import settings
 
 
@@ -29,7 +33,7 @@ class AuthenticationServices:
             user.save()
             token = RegistrationToken.objects.create(user=user)
         celery_apply_async(
-            send_email_async,
+            task_send_email_async,
             args=[
                 EmailType.USER_REGISTER_EMAIL.value,
                 [user.email],
@@ -65,11 +69,17 @@ class AuthenticationServices:
                 }
         except User.DoesNotExist:
             ex = UserNotFoundException
-            return {"is_email_confirmed": False, "reason": ex.error_msg, }
+            return {
+                "is_email_confirmed": False,
+                "reason": ex.error_msg,
+            }
 
         except RegistrationToken.DoesNotExist:
             ex = TokenNotFoundException
-            return {"is_email_confirmed": False, "reason": ex.error_msg, }
+            return {
+                "is_email_confirmed": False,
+                "reason": ex.error_msg,
+            }
 
 
 class AddressServices:

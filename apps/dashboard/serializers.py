@@ -27,8 +27,12 @@ class DashboardSerializer(serializers.ModelSerializer):
 
 
 class DashboardWithTasksSerializer(DashboardSerializer):
-    task = TaskShortDetailsSerializer(many=True)
+    task = serializers.SerializerMethodField()
     project_name = serializers.SerializerMethodField()
+
+    def get_task(self, instance):
+        tasks = instance.task.all().order_by("created_at")
+        return TaskShortDetailsSerializer(tasks, many=True).data
 
     def get_project_name(self, obj):
         return obj.project.name

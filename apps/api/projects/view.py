@@ -1,6 +1,8 @@
 from typing import Any
 from uuid import UUID
 
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
@@ -9,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.api.base_auth import TokenAuth
+from apps.api.projects.serializers import ProjectsShortInfoQuerySerializer
 from apps.projects.selectors import ProjectSelector
 from apps.projects.serializers import (
     ActiveProjectsAndTasksSerializer,
@@ -36,9 +39,25 @@ class ActiveProjectsAndTasksView(TokenAuth, APIView):
 class ProjectsShortInfoView(TokenAuth, APIView):
     serializer_class = ProjectsShortInfoSerializer
 
+    @extend_schema(
+        responses={status.HTTP_200_OK: serializer_class},
+        parameters=[
+            OpenApiParameter(
+                "is_archived",
+                OpenApiTypes.BOOL,
+                description="If True - method will send request to second database with archived projects",
+                default=False,
+            )
+        ],
+    )
     def get(self, request: Request) -> Response:
         """Get all projects and return short info, name image and description"""
-        projects = ProjectSelector.get_all_by_user(user=request.user)
+        query_params = ProjectsShortInfoQuerySerializer(data=request.query_params)
+        query_params.is_valid(raise_exception=True)
+
+        projects = ProjectSelector.get_all_by_user(
+            user=request.user, is_archived=query_params.validated_data["is_archived"]
+        )
         projects.order_by("-created_at")
 
         return Response(self.serializer_class(projects, many=True).data, status=status.HTTP_200_OK)
@@ -88,7 +107,8 @@ class SingleProjectView(TokenAuth, GenericAPIView):
     def put(self, request: Request, project_id: UUID) -> Response:
         """Edit project by ID"""
         serializer = self.update_serializer(data=request.data)
+        # TODO: Validator for length project name
         serializer.is_valid(raise_exception=True)
 
         response = ProjectsServices.update_project(data=serializer.validated_data, project_id=project_id)
-        return Response(self.get_serializer(response).data, status=status.HTTP_200_OK)
+        return Response(self.serializer_class(response).data, status=status.HTTP_200_OK)

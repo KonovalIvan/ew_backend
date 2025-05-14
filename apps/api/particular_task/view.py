@@ -62,4 +62,4 @@ class SingleTaskView(TokenAuth, GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         response = TaskServices.update_task(data=serializer.validated_data, task_id=task_id)
-        return Response(self.get_serializer(response).data, status=status.HTTP_200_OK)
+        return Response(self.serializer_class(response).data, status=status.HTTP_200_OK)

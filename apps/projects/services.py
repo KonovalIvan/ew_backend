@@ -47,7 +47,7 @@ class ProjectsServices:
         if "address" in data:
             address = AddressServices.update_address(address_data=data["address"])
             project.address = address
-
+        print(data)
         project.designer = User.objects.filter(username=data["designer_email"]).first()
         project.building_master = User.objects.filter(username=data["building_master_email"]).first()
         project.name = data["name"]

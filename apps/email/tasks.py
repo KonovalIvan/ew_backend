@@ -7,7 +7,7 @@ from apps.email.services import EmailServices
 
 
 @shared_task()
-def send_email_async(
+def task_send_email_async(
     email_type: EmailType,
     recipients: List[str],
     context: Dict[str, Any],

@@ -12,7 +12,6 @@ from rest_framework.views import APIView
 
 from apps.api.base_auth import NoAuth, TokenAuth
 from apps.authentication.consts import DEFAULT_USER_LANGUAGE
-from apps.authentication.models import User
 from apps.authentication.selectors import UserSelector
 from apps.authentication.serializers import (
     LoginSerializer,
@@ -32,18 +31,22 @@ class LoginView(NoAuth, APIView):
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = self.serializer_class(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
-
-        if not (
+        print(serializer.data)
+        if (
+            not (
                 user := UserSelector.get_by_username_or_none(
                     username=serializer.validated_data["username"],
                 )
-        ) or not user.check_password(serializer.validated_data["password"]) or not user.is_registered:
+            )
+            or not user.check_password(serializer.validated_data["password"])
+            or not user.is_registered
+        ):
             return Response({"error_msg": "Invalid username or password."}, status=status.HTTP_400_BAD_REQUEST)
         token, created = Token.objects.get_or_create(user=user)
 
         return Response(
             {
-                "access_token": token.key,
+                "token": token.key,
             }
         )
 
